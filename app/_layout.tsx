@@ -1,3 +1,6 @@
+import config from "../tamagui.config";
+
+import React from "react";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "react-native";
@@ -7,8 +10,12 @@ import {
   Theme,
   YStack,
 } from "tamagui";
-import config from "./tamagui.config";
-import React from "react";
+import { Stack } from "expo-router";
+import {
+  ThemeProvider,
+  DarkTheme,
+  DefaultTheme
+} from "@react-navigation/native";
 
 export default function App() {
   const colorScheme = useColorScheme();
@@ -27,12 +34,9 @@ export default function App() {
   return (
     <TamaguiProvider config={config}>
       <Theme name={colorScheme === "dark" ? "dark" : "light"}>
-        <YStack f={1} jc="center" ai="center" backgroundColor={"$background"}>
-          <Paragraph color="$color" jc="center">
-            PSBC
-          </Paragraph>
-          <StatusBar style="auto" />
-        </YStack>
+        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack screenOptions={{headerTransparent: true, headerBlurEffect: "dark"}} />
+        <StatusBar style="auto" /></ThemeProvider>
       </Theme>
     </TamaguiProvider>
   );

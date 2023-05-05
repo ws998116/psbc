@@ -2,6 +2,7 @@
   "expo": {
     "name": "psbc",
     "slug": "psbc",
+    "scheme": "psbc",
     "version": "0.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,7 +25,8 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
     }
   }
 }
