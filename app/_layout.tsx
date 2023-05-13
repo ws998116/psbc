@@ -4,18 +4,14 @@ import React from "react";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "react-native";
-import {
-  Paragraph,
-  TamaguiProvider,
-  Theme,
-  YStack,
-} from "tamagui";
+import { TamaguiProvider, Theme } from "tamagui";
 import { Stack } from "expo-router";
 import {
   ThemeProvider,
   DarkTheme,
-  DefaultTheme
+  DefaultTheme,
 } from "@react-navigation/native";
+import LogoTitle from "../components/LogoTitle";
 
 export default function App() {
   const colorScheme = useColorScheme();
@@ -34,9 +30,33 @@ export default function App() {
   return (
     <TamaguiProvider config={config}>
       <Theme name={colorScheme === "dark" ? "dark" : "light"}>
-        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{headerTransparent: true, headerBlurEffect: "dark"}} />
-        <StatusBar style="auto" /></ThemeProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack
+            screenOptions={{
+              headerTransparent: true,
+              headerBlurEffect: "dark",
+            }}
+          >
+            <Stack.Screen
+              name="index"
+              options={{
+                title: "Welcome",
+                headerTitle: () => <LogoTitle />,
+                headerLargeTitle: true,
+              }}
+            />
+            <Stack.Screen
+              name="worship"
+              options={{
+                title: "Worship Services",
+                headerTitle: () => <LogoTitle back />,
+              }}
+            />
+          </Stack>
+          <StatusBar style="auto" />
+        </ThemeProvider>
       </Theme>
     </TamaguiProvider>
   );
