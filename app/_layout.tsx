@@ -54,6 +54,20 @@ export default function App() {
                 headerTitle: () => <LogoTitle back />,
               }}
             />
+            <Stack.Screen
+              name="upcoming"
+              options={{
+                title: "Upcoming Events",
+                headerTitle: () => <LogoTitle back />,
+              }}
+            />
+            <Stack.Screen
+              name="giving"
+              options={{
+                title: "Give to Park Street",
+                headerTitle: () => <LogoTitle back />,
+              }}
+            />
           </Stack>
           <StatusBar style="auto" />
         </ThemeProvider>

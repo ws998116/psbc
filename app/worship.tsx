@@ -64,9 +64,9 @@ export default function Worship() {
         width={"100%"}
         space={25}
       >
-        <Card elevate size="$4" bordered flex={1}>
-          <Card.Header padded flex={1}>
-            <YStack space={10}>
+        {/* <Card elevate size="$4" bordered flex={1}>
+          <Card.Header padded flex={1}> */}
+            {/* <YStack space={10} w={"100%"}> */}
               <H2 size={"$8"} theme={"alt2"}>
                 Sunday Morning Details
               </H2>
@@ -78,10 +78,10 @@ export default function Worship() {
                   key={index}
                 />
               ))}
-            </YStack>
-          </Card.Header>
-        </Card>
-        <Card elevate size="$4" bordered flex={1}>
+            {/* </YStack> */}
+          {/* </Card.Header>
+        </Card> */}
+        {/* <Card elevate size="$4" bordered flex={1}>
           <Card.Header padded flex={1}>
             <H2 size={"$8"} theme={"alt1"}>
               Worship Services at Park Street
@@ -97,7 +97,7 @@ export default function Worship() {
               quietly, or simply reflecting. All are welcome to worship with us.
             </Paragraph>
           </Card.Header>
-        </Card>
+        </Card> */}
       </YStack>
     </ScrollView>
   );
@@ -112,7 +112,7 @@ function QuickInfo({
   return (
     <Popover size="$5" allowFlip {...props}>
       <Popover.Trigger asChild>
-        <Button /*icon={Icon}*/>{Title}</Button>
+        <Button /*icon={Icon}*/ w={"100%"}>{Title}</Button>
       </Popover.Trigger>
 
       <Popover.Content
