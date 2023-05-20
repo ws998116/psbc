@@ -1,20 +1,51 @@
 import config from "../tamagui.config";
 
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useFonts } from "expo-font";
 import { StatusBar } from "expo-status-bar";
-import { useColorScheme } from "react-native";
-import { TamaguiProvider, Theme } from "tamagui";
-import { Stack } from "expo-router";
+import { Animated, useColorScheme } from "react-native";
+import { Button, TamaguiProvider, Theme } from "tamagui";
+import { Stack, usePathname, useRouter } from "expo-router";
 import {
   ThemeProvider,
   DarkTheme,
   DefaultTheme,
 } from "@react-navigation/native";
 import LogoTitle from "../components/LogoTitle";
+import { Settings } from "@tamagui/lucide-icons";
 
 export default function App() {
+  const router = useRouter();
+  const pathname = usePathname();
   const colorScheme = useColorScheme();
+
+  const [showSettings, setShowSettings] = useState(true);
+
+  useEffect(() => {
+    if (pathname === "/settings") {
+      setShowSettings(false);
+    } else {
+      setShowSettings(true);
+    }
+  }, [pathname]);
+
+  const settingsOpacity = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (showSettings) {
+      Animated.timing(settingsOpacity, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(settingsOpacity, {
+        toValue: 0,
+        duration: 1,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [showSettings]);
 
   const [loaded] = useFonts({
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
@@ -68,7 +99,29 @@ export default function App() {
                 headerTitle: () => <LogoTitle back />,
               }}
             />
+            <Stack.Screen
+              name="settings"
+              options={{
+                title: "Settings",
+                headerTitle: () => <LogoTitle back />,
+              }}
+            />
           </Stack>
+          <Animated.View
+            style={{
+              opacity: settingsOpacity,
+              position: "absolute",
+              right: 15,
+              top: 45,
+            }}
+          >
+            <Button
+              bg={"transparent"}
+              circular
+              icon={<Settings color="gray" />}
+              onPress={() => router.push("/settings")}
+            />
+          </Animated.View>
           <StatusBar style="auto" />
         </ThemeProvider>
       </Theme>
