@@ -6,6 +6,7 @@ import GivingCard from "../components/GivingCard";
 import { View } from "react-native";
 import { Settings } from "@tamagui/lucide-icons";
 import { Link } from "expo-router";
+import SurveyCard from "../components/SurveyCard";
 
 export default function Home() {
   return (
@@ -28,9 +29,21 @@ export default function Home() {
           flex={1}
           width={"100%"}
           space={25}
+          marginBottom={25}
         >
           <Theme name={"green"}>
             <WorshipCard
+              animation="bouncy"
+              size="$4"
+              width={"100%"}
+              flex={1}
+              hoverStyle={{ scale: 1.02 }}
+              pressStyle={{ scale: 1.05 }}
+            />
+          </Theme>
+
+          <Theme name={"yellow"}>
+            <SurveyCard
               animation="bouncy"
               size="$4"
               width={"100%"}
@@ -51,7 +64,7 @@ export default function Home() {
             />
           </Theme>
 
-          <Theme name={"orange"}>
+          <Theme name={"purple"}>
             <GivingCard
               animation="bouncy"
               size="$4"
