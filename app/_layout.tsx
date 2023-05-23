@@ -67,7 +67,7 @@ export default function App() {
           <Stack
             screenOptions={{
               headerTransparent: true,
-              headerBlurEffect: "dark",
+              headerBlurEffect: colorScheme === "dark" ? "dark" : "prominent",
             }}
           >
             <Stack.Screen
