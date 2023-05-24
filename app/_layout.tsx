@@ -68,6 +68,7 @@ export default function App() {
             screenOptions={{
               headerTransparent: true,
               headerBlurEffect: colorScheme === "dark" ? "dark" : "prominent",
+              headerStyle: {backgroundColor: colorScheme === "dark" ? "transparent" : "#3daca644"}
             }}
           >
             <Stack.Screen
@@ -76,6 +77,7 @@ export default function App() {
                 title: "Welcome",
                 headerTitle: () => <LogoTitle />,
                 headerLargeTitle: true,
+                headerLargeTitleStyle: { color: colorScheme === "dark" ? "white" : "#184442"}
               }}
             />
             <Stack.Screen

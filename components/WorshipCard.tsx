@@ -1,19 +1,16 @@
 import React from "react";
 import {
-  Button,
-  XStack,
   Card,
   H2,
   Paragraph,
   CardProps,
-  Theme,
   Spacer,
   YStack,
 } from "tamagui";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
 
-export default function WorshipCard(cardProps: CardProps) {
+export default function WorshipCard(cardProps: CardProps) {  
   return (
     <Link href="/worship" asChild>
       <Card elevate size="$4" bordered {...cardProps} flex={1}>
