@@ -9,6 +9,7 @@ import {
   Theme,
   Spacer,
   YStack,
+  Stack,
 } from "tamagui";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
@@ -22,7 +23,9 @@ export default function GivingCard(cardProps: CardProps) {
           <YStack>
             <XStack justifyContent="space-between">
               <H2>Give to Park Street</H2>
-              <HelpingHand />
+              <Stack paddingTop={7}>
+                <HelpingHand />
+              </Stack>
             </XStack>
             <Paragraph theme="alt2">
               Honor the Lord through giving

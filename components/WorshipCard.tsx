@@ -6,11 +6,14 @@ import {
   CardProps,
   Spacer,
   YStack,
+  XStack,
+  Stack,
 } from "tamagui";
 import { Image } from "expo-image";
 import { Link } from "expo-router";
+import { Church } from "@tamagui/lucide-icons";
 
-export default function WorshipCard(cardProps: CardProps) {  
+export default function WorshipCard(cardProps: CardProps) {
   return (
     <Link href="/worship" asChild>
       <Card elevate size="$4" bordered {...cardProps} flex={1}>
@@ -28,12 +31,17 @@ export default function WorshipCard(cardProps: CardProps) {
         />
         <Card.Header padded flex={1}>
           <YStack>
-            <H2>Worship with us</H2>
+            <XStack justifyContent="space-between">
+              <H2>Worship with us</H2>
+              <Stack paddingTop={7}>
+                <Church />
+              </Stack>
+            </XStack>
             <Paragraph theme="alt2">
               Services at 9:00 and 10:30 Sunday mornings
             </Paragraph>
             <Spacer />
-            <Paragraph alignSelf="flex-end">See more info</Paragraph>
+            <Paragraph alignSelf="flex-end">More info</Paragraph>
           </YStack>
         </Card.Header>
       </Card>

@@ -34,7 +34,7 @@ export default function UpcomingCard(props: Props) {
 
   return (
     <Card elevate size="$4" bordered {...props.cardProps} flex={1}>
-      <PagerView
+      {/* <PagerView
         style={{ flex: 1, width: "100%", height: 150 }}
         initialPage={0}
         onPageSelected={(e) => resetTimer(e.nativeEvent.position)}
@@ -58,15 +58,40 @@ export default function UpcomingCard(props: Props) {
             </Card>
           </Stack>
         ))}
-      </PagerView>
+      </PagerView> */}
+      <XStack flex={1}>
+        {props.images.map((image, index) => (
+          <Stack
+            flex={1}
+            alignItems="center"
+            justifyContent="center"
+            key={index}
+          >
+            <Image
+              style={{
+                width: "100%",
+                aspectRatio: 16 / 9,
+                flex: 1,
+              }}
+              contentFit="cover"
+              source={{
+                uri: image,
+              }}
+              transition={200}
+            />
+          </Stack>
+        ))}
+      </XStack>
       <Link href="/upcoming" asChild>
         <Card.Header padded flex={1}>
           <YStack>
             <XStack justifyContent="space-between">
               <H2>Upcoming Events</H2>
-              <CalendarClock />
+              <Stack paddingTop={7}>
+                <CalendarClock />
+              </Stack>
             </XStack>
-            <Paragraph theme="alt2">Have some fun with our community</Paragraph>
+            <Paragraph theme="alt2" >Have some fun with our community</Paragraph>
             <Spacer />
             <Paragraph alignSelf="flex-end">View calendar</Paragraph>
           </YStack>

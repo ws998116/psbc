@@ -4,13 +4,13 @@ import { Spinner } from "tamagui";
 
 export default function Giving() {
   return (
-      <WebView
-        source={{
-          uri: "https://pushpay.com/g/parkstreetbrethren?src=hpp&r=monthly",
-        }}
-        style={{ flex: 1, marginTop: "23%" }}
-        startInLoadingState={true}
-        renderLoading={() => <Spinner flex={1} />}
-      />
+    <WebView
+      source={{
+        uri: "https://pushpay.com/g/parkstreetbrethren?src=hpp&r=monthly",
+      }}
+      style={{ flex: 1, marginTop: "23%" }}
+      startInLoadingState={true}
+      renderLoading={() => <Spinner flex={1} />}
+    />
   );
 }

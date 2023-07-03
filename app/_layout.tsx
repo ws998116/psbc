@@ -95,6 +95,13 @@ export default function App() {
               }}
             />
             <Stack.Screen
+              name="sermons"
+              options={{
+                title: "Sermons",
+                headerTitle: () => <LogoTitle back />,
+              }}
+            />
+            <Stack.Screen
               name="giving"
               options={{
                 title: "Give to Park Street",

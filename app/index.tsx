@@ -5,11 +5,13 @@ import UpcomingCard from "../components/UpcomingCard";
 import GivingCard from "../components/GivingCard";
 import { View } from "react-native";
 import SurveyCard from "../components/SurveyCard";
+import SermonsCard from "../components/SermonsCard";
 
 export default function Home() {
-  const [images, setImages] = useState<string[]>([]);
+  const [upcomingEventsImages, setUpcomingEventImages] = useState<string[]>([]);
+  const [sermonImage, setSermonImage] = useState<string>("");
 
-  const getImages = async () => {
+  const getUpcomingEventsImages = async () => {
     let imgs: string[] = [];
     const month = new Date(Date.now()).getMonth() + 1;
     const months = [month, month + 1];
@@ -34,14 +36,46 @@ export default function Home() {
         console.error(error);
       }
     }
-    
+
     if (imgs.length > 0) {
-      setImages(imgs);
+      setUpcomingEventImages(imgs);
+    }
+  };
+
+  const getSermonImage = async () => {
+    let img: string = "";
+
+    const uri = `https://www.parkstreetbrethren.org/sermons`;
+
+    try {
+      const result = await fetch(uri);
+      const html = await result.text();
+      const imgReg = /(<img\s(.*)>)/g;
+      const matches = html.match(imgReg);
+
+      if (matches == null) {
+        return;
+      }
+      for (let i = 1; i < matches?.length; i++) {
+        const match = matches[i]?.toString();
+        const possibleImg = match?.split('src="')[1]?.split('"')[0];
+        if (possibleImg) {
+          img = `https://www.parkstreetbrethren.org/` + possibleImg;
+          break;
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    if (img) {
+      setSermonImage(img);
     }
   };
 
   useEffect(() => {
-    getImages();
+    getUpcomingEventsImages();
+    getSermonImage();
   }, []);
 
   return (
@@ -86,7 +120,19 @@ export default function Home() {
               hoverStyle: { scale: 1.02 },
               pressStyle: { scale: 1.05 },
             }}
-            images={images}
+            images={upcomingEventsImages}
+          />
+
+          <SermonsCard
+            cardProps={{
+              animation: "bouncy",
+              size: "$4",
+              width: "100%",
+              flex: 1,
+              hoverStyle: { scale: 1.02 },
+              pressStyle: { scale: 1.05 },
+            }}
+            image={sermonImage}
           />
 
           <GivingCard
