@@ -18,10 +18,6 @@ export default function SermonSeries() {
     getSeries();
   }, []);
 
-  useEffect(() => {
-    console.log(series.length);
-  }, [series]);
-
   const getSeries = async () => {
     const res = await fetch("/api/series");
     const data = await res.json();
@@ -68,6 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingHorizontal: horizontalPadding,
     paddingTop: verticalPadding,
+    backgroundColor: "transparent",
   },
   flatlist: { flex: 1, width: "100%", paddingHorizontal: "1%" },
   title: {

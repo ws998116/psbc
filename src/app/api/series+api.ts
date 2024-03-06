@@ -1,11 +1,14 @@
 import { ExpoRequest, ExpoResponse } from "expo-router/server";
 
 export type Sermon = {
-  link: string;
+  url: string;
   date: string;
   title: string;
   speaker: string | null;
   image: string;
+  seriesUrl: string | null;
+  seriesTitle: string | null;
+  audioUrl: string | null;
 };
 
 export type Series = {
@@ -76,11 +79,14 @@ export async function GET(request: ExpoRequest) {
         const date = dateTitle[0];
         const title = dateTitle[1];
         sermons.push({
-          link,
-          date,
+          url: link,
           title,
+          date,
           speaker: null, // speaker info not available in this HTML page
           image,
+          seriesUrl: null,
+          seriesTitle: null,
+          audioUrl: null,
         });
       });
 

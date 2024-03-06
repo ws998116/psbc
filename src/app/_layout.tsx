@@ -10,6 +10,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 
 import { useColorScheme } from "@/src/components/useColorScheme";
+import { AudioProvider } from "../context/audio";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -33,6 +34,7 @@ export default function RootLayout() {
     InterMedium: require("../assets/fonts/Inter-Medium.ttf"),
     InterRegular: require("../assets/fonts/Inter-Regular.ttf"),
     InterLight: require("../assets/fonts/Inter-Light.ttf"),
+    InterThin: require("../assets/fonts/Inter-Thin.ttf"),
     ...FontAwesome.font,
   });
 
@@ -59,16 +61,25 @@ function RootLayoutNav() {
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen
-          name="(tabs)"
-          options={{ headerShown: false, title: "Home" }}
-        />
-        <Stack.Screen
-          name="settings"
-          options={{ presentation: "modal", title: "Settings" }}
-        />
-      </Stack>
+      <AudioProvider>
+        <Stack>
+          <Stack.Screen
+            name="(tabs)"
+            options={{ headerShown: false, title: "Home" }}
+          />
+          <Stack.Screen
+            name="settings"
+            options={{ presentation: "modal", title: "Settings" }}
+          />
+          <Stack.Screen
+            name="player"
+            options={{
+              title: "Player",
+              headerShown: false,
+            }}
+          />
+        </Stack>
+      </AudioProvider>
     </ThemeProvider>
   );
 }

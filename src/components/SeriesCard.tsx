@@ -1,9 +1,7 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { Pressable, StyleSheet } from "react-native";
 
-import { ExternalLink } from "./ExternalLink";
-import { MonoText } from "./StyledText";
-import { Text, View, borderRadius } from "./Themed";
+import { borderRadius, useThemeColor } from "./Themed";
 
 import Colors from "@/src/constants/Colors";
 import { Image } from "expo-image";
@@ -21,6 +19,8 @@ export default function SeriesCard({ series }: { series: Series }) {
               aspectRatio: 16 / 9,
               flex: 1,
               borderRadius: borderRadius,
+              borderWidth: 1,
+              borderColor: useThemeColor({}, "border"),
             }}
             contentFit="cover"
             source={series.image}

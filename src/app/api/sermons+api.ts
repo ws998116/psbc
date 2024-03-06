@@ -41,7 +41,7 @@ export async function GET(request: ExpoRequest) {
         .split("</div>")[0]
         .trim();
 
-      allSermons.push({ link, date, title, speaker, image });
+      allSermons.push({ url: link, date, title, speaker, image });
     });
   } catch (error) {
     console.error(error);

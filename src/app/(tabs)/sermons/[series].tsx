@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   FlatList,
   ListRenderItem,
+  Platform,
   Pressable,
   StyleSheet,
 } from "react-native";
@@ -11,6 +12,7 @@ import {
   View,
   borderRadius,
   horizontalPadding,
+  useThemeColor,
   verticalPadding,
 } from "@/src/components/Themed";
 import { useEffect, useState } from "react";
@@ -19,6 +21,7 @@ import { usePathname } from "expo-router";
 import { Image } from "expo-image";
 import SermonListItem from "@/src/components/SermonListItem";
 import TryAgainButton from "@/src/components/TryAgainButton";
+import { StatusBar } from "expo-status-bar";
 
 type SermonList = Sermon[];
 
@@ -54,7 +57,13 @@ export default function SermonSeries() {
   return (
     <View style={styles.container}>
       {loading ? (
-        <View style={{ justifyContent: "center", flex: 1 }}>
+        <View
+          style={{
+            justifyContent: "center",
+            flex: 1,
+            backgroundColor: "transparent",
+          }}
+        >
           <ActivityIndicator size={"large"} />
         </View>
       ) : err ? (
@@ -95,13 +104,18 @@ export default function SermonSeries() {
                 darkColor="rgba(255,255,255,0.1)"
               />
             )}
-            ListFooterComponent={<View style={{ height: 150 }} />}
+            ListFooterComponent={
+              <View style={{ height: 150, backgroundColor: "transparent" }} />
+            }
             style={styles.flatlist}
             showsVerticalScrollIndicator={false}
             contentInsetAdjustmentBehavior="automatic"
           />
         </>
       )}
+
+      {/* Use a light status bar on iOS to account for the black space above the modal */}
+      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
     </View>
   );
 }
@@ -113,6 +127,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingHorizontal: horizontalPadding,
     paddingTop: verticalPadding,
+    backgroundColor: "transparent",
   },
   flatlist: {
     flex: 1,
