@@ -35,7 +35,8 @@
         {
           "origin": "https://psbc.app/"
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
