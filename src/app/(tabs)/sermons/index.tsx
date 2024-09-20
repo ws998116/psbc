@@ -52,6 +52,7 @@ export default function SermonSeries() {
         style={styles.flatlist}
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{width: "100%"}}
       />
     </View>
   );
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
     paddingTop: verticalPadding,
     backgroundColor: "transparent",
   },
-  flatlist: { flex: 1, width: "100%", paddingHorizontal: "1%" },
+  flatlist: { width: "100%", paddingHorizontal: "1%"},
   title: {
     fontSize: 20,
     fontWeight: "bold",

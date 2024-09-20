@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalPadding,
     paddingTop: verticalPadding,
     backgroundColor: "transparent",
-    maxWidth: 600
   },
   flatlist: {
     flex: 1,
