@@ -16,6 +16,7 @@ export default function SeriesCard({ series }: { series: Series }) {
           <Image
             style={{
               width: "100%",
+              maxWidth: 600,
               aspectRatio: 16 / 9,
               flex: 1,
               borderRadius: borderRadius,

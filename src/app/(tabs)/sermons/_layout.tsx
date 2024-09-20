@@ -1,13 +1,10 @@
 import React from "react";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Link, Stack, Tabs } from "expo-router";
+import { Stack } from "expo-router";
 
-import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/components/useColorScheme";
 import { useClientOnlyValue } from "@/src/components/useClientOnlyValue";
+import { Platform } from "react-native";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
 
   return (
     <Stack
@@ -26,9 +23,9 @@ export default function TabLayout() {
       <Stack.Screen
         name="[series]"
         options={{
-          title: "Sermons",
-          headerShown: false,
-          presentation: "modal",
+          title: "Series",
+          headerShown: Platform.OS != "ios",
+          presentation: Platform.OS === "ios" ? "modal" : "card",
         }}
       />
     </Stack>
