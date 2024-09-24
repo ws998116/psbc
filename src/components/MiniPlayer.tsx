@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Pressable } from "react-native";
+import { Platform, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, useRouter } from "expo-router";
 import { BlurView } from "expo-blur";
@@ -34,6 +34,7 @@ export default function MiniPlayer() {
         style={{
           position: "absolute",
           bottom: tabBarHeight,
+          right: Platform.OS === "web" ? tabBarHeight : undefined,
           width: "96%",
           height: 55,
           borderRadius: borderRadius,
@@ -41,6 +42,7 @@ export default function MiniPlayer() {
           overflow: "hidden",
           borderWidth: 0.5,
           backgroundColor: "transparent",
+          maxWidth: Platform.OS === "web" ? 400 : undefined,
         }}
         // darkColor="#111"
       >
