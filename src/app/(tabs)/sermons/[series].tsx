@@ -89,6 +89,7 @@ export default function SermonSeries() {
               width: "100%",
               aspectRatio: 16 / 9,
               borderRadius: borderRadius,
+              maxWidth: 600,
             }}
             contentFit="cover"
             source={sermons[0]?.image}
@@ -134,6 +135,7 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: "1%",
     marginTop: 7,
+    // maxWidth: 600,
   },
   separator: {
     marginVertical: 4,

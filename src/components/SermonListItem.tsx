@@ -71,5 +71,8 @@ const styles = StyleSheet.create({
     padding: 7,
     borderRadius: borderRadius,
     borderWidth: 1,
+    maxWidth: 600,
+    alignSelf: "center",
+    width: "100%",
   },
 });
