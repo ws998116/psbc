@@ -21,6 +21,8 @@ interface AudioContextType {
   showMiniPlayer: boolean;
   sermonUrl: string | null;
   setSermonUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  playbackPositionPercent: number;
+  stopAudio: () => Promise<void>;
 }
 
 const AudioContext = React.createContext<AudioContextType | null>(null);
@@ -40,6 +42,9 @@ export function AudioProvider(props: any) {
 
   const [sermonUrl, setSermonUrl] = useState<string | null>(null);
   const [sermon, setSermon] = useState<Sermon | null>(null);
+
+  const [playbackPositionPercent, setPlaybackPositionPercent] =
+    useState<number>(0);
 
   const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
     if ("error" in status) {
@@ -63,6 +68,22 @@ export function AudioProvider(props: any) {
     );
 
     setSound(playbackObject);
+  };
+
+  const stopAudio = async () => {
+    if (sound != null) {
+      console.log("Audio", "stopping");
+      try {
+        await sound.stopAsync();
+        await sound.unloadAsync();
+      } catch (error) {
+        console.warn("Error stopping audio", { error });
+      }
+      setSound(null);
+      setSermonUrl(null);
+      setPlayBackStatus(null);
+      setShowMiniPlayer(false);
+    }
   };
 
   const getSermon = async (uri: string) => {
@@ -111,6 +132,14 @@ export function AudioProvider(props: any) {
     }
   }, [sound, pathname]);
 
+  useEffect(() => {
+    if (playbackStatus?.positionMillis && playbackStatus?.durationMillis) {
+      const percent =
+        (playbackStatus?.positionMillis / playbackStatus?.durationMillis) * 100;
+      setPlaybackPositionPercent(percent);
+    }
+  }, [playbackStatus]);
+
   return (
     <AudioContext.Provider
       value={{
@@ -122,6 +151,8 @@ export function AudioProvider(props: any) {
         showMiniPlayer,
         sermonUrl,
         setSermonUrl,
+        playbackPositionPercent,
+        stopAudio,
       }}
     >
       {props.children}
