@@ -23,6 +23,8 @@ interface AudioContextType {
   setSermonUrl: React.Dispatch<React.SetStateAction<string | null>>;
   playbackPositionPercent: number;
   stopAudio: () => Promise<void>;
+  rewindAudio: () => Promise<void>;
+  fastforwardAudio: () => Promise<void>;
 }
 
 const AudioContext = React.createContext<AudioContextType | null>(null);
@@ -83,6 +85,32 @@ export function AudioProvider(props: any) {
       setSermonUrl(null);
       setPlayBackStatus(null);
       setShowMiniPlayer(false);
+    }
+  };
+
+  const rewindAudio = async () => {
+    if (sound != null) {
+      console.log("Audio", "rewinding");
+      try {
+        await sound.setPositionAsync(
+          (playbackStatus?.positionMillis ?? 15000) - 15000
+        );
+      } catch (error) {
+        console.warn("Error rewinding audio", { error });
+      }
+    }
+  };
+
+  const fastforwardAudio = async () => {
+    if (sound != null) {
+      console.log("Audio", "fastforwarding");
+      try {
+        await sound.setPositionAsync(
+          (playbackStatus?.positionMillis ?? 15000) + 15000
+        );
+      } catch (error) {
+        console.warn("Error fastforwarding audio", { error });
+      }
     }
   };
 
@@ -153,6 +181,8 @@ export function AudioProvider(props: any) {
         setSermonUrl,
         playbackPositionPercent,
         stopAudio,
+        rewindAudio,
+        fastforwardAudio,
       }}
     >
       {props.children}

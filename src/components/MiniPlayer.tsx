@@ -13,6 +13,7 @@ import {
 } from "./Themed";
 import { Pause, Play, X } from "lucide-react-native";
 import { useAudio } from "../context/audio";
+import { SubText } from "./StyledText";
 // import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function MiniPlayer() {
@@ -22,13 +23,9 @@ export default function MiniPlayer() {
   const tabBarHeight = 85; //useBottomTabBarHeight();
   const iconColor = useThemeColor({}, "text");
 
-  //   useEffect(() => {
-  //     console.log("show miniplayer", AudioManager?.showMiniPlayer);
-  //   }, []);
-
   if (audio?.showMiniPlayer) {
     return (
-      <Pressable /*onPress={() => router.push("/player")}*/>
+      <Pressable onPress={() => router.push("/player")}>
         <View
           style={{
             position: "absolute",
@@ -60,15 +57,12 @@ export default function MiniPlayer() {
                 <Text style={{ fontFamily: "InterMedium" }}>
                   {audio.sermon?.title}
                 </Text>
-                <Text style={{ fontFamily: "InterRegular", fontSize: 12 }}>
+                <SubText style={{ fontFamily: "InterRegular", fontSize: 12 }}>
                   {audio.sermon?.speaker}
-                </Text>
+                </SubText>
               </View>
               <Pressable
                 onPress={() =>
-                  //   AudioManager.currentStatus?.isPlaying
-                  //     ? AudioManager.currentSound?.pauseAsync()
-                  //     : AudioManager.currentSound?.playAsync()
                   audio?.playbackStatus?.isPlaying
                     ? audio?.sound?.pauseAsync()
                     : audio?.sound?.playAsync()
