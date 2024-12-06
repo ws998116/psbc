@@ -1,4 +1,5 @@
 import { Pressable, SafeAreaView, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
 
 import {
   Text,
@@ -8,40 +9,22 @@ import {
   useThemeColor,
   verticalPadding,
 } from "@/src/components/Themed";
+import { Collections, SermonsRecord } from "@/pocketbase-types";
 import { Image } from "expo-image";
-import { Sermon } from "./api/series+api";
-import { useEffect, useState } from "react";
 import { useAudio } from "../context/audio";
 import { Pause, Play, RedoDot, UndoDot } from "lucide-react-native";
 import { HeaderText, SubText } from "../components/StyledText";
+import pb from "../pb";
 // import AudioManager from "@/src/AudioManager";
 
 export default function SermonPlayer() {
-  const [sermon, setSermon] = useState<Sermon | null>(null);
+  const [sermon, setSermon] = useState<SermonsRecord | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [err, setErr] = useState<string | null>(null);
   const audio = useAudio();
 
   const iconColor = useThemeColor({}, "background");
   const buttonColor = useThemeColor({}, "text");
-
-  // useEffect(() => {
-  //   setLoading(true);
-  //   if (AudioManager.currentURL != null) {
-  //     getSermon(AudioManager.currentURL);
-  //   }
-  // }, []);
-
-  const getSermon = async (uri: string) => {
-    const res = await fetch(`/api/sermon?uri=${encodeURIComponent(uri)}`);
-    if (res.ok) {
-      const data = await res.json();
-      setSermon(data);
-    } else {
-      setErr("Something went wrong... ");
-    }
-    setLoading(false);
-  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,7 +47,7 @@ export default function SermonPlayer() {
             borderRadius: borderRadius,
           }}
           contentFit="cover"
-          source={audio?.sermon?.image}
+          source={audio?.sermon?.imageUrl}
           transition={200}
         />
       </View>
@@ -85,7 +68,7 @@ export default function SermonPlayer() {
             {audio?.sermon?.title}
           </HeaderText>
           <SubText style={{ fontFamily: "InterRegular", fontSize: 16 }}>
-            {audio?.sermon?.speaker}
+            {audio?.sermon?.expand?.speaker.name}
           </SubText>
         </View>
         <View
@@ -127,7 +110,13 @@ export default function SermonPlayer() {
             />
           </View>
         </View>
-        <View style={{ flexDirection: "row", justifyContent: "space-evenly" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            backgroundColor: "transparent",
+          }}
+        >
           <Pressable
             onPress={() => audio?.rewindAudio()}
             style={{

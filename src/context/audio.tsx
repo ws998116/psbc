@@ -1,4 +1,9 @@
 import {
+  SermonsRecord,
+  SermonsResponse,
+  SpeakersResponse,
+} from "@/pocketbase-types";
+import {
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
   Audio,
@@ -8,7 +13,6 @@ import {
 import { Sound } from "expo-av/build/Audio";
 import { router, usePathname, useSegments } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { Sermon } from "../app/api/series+api";
 
 interface AudioContextType {
   sound: Sound | null;
@@ -17,10 +21,11 @@ interface AudioContextType {
   setPlayBackStatus: React.Dispatch<
     React.SetStateAction<AVPlaybackStatusSuccess | null>
   >;
-  sermon: Sermon | null;
+  sermon: SermonsResponse<{ speaker: SpeakersResponse }> | null;
   showMiniPlayer: boolean;
-  sermonUrl: string | null;
-  setSermonUrl: React.Dispatch<React.SetStateAction<string | null>>;
+  setSermon: React.Dispatch<
+    React.SetStateAction<SermonsResponse<{ speaker: SpeakersResponse }> | null>
+  >;
   playbackPositionPercent: number;
   stopAudio: () => Promise<void>;
   rewindAudio: () => Promise<void>;
@@ -42,8 +47,9 @@ export function AudioProvider(props: any) {
     useState<AVPlaybackStatusSuccess | null>(null);
   const [showMiniPlayer, setShowMiniPlayer] = useState<boolean>(false);
 
-  const [sermonUrl, setSermonUrl] = useState<string | null>(null);
-  const [sermon, setSermon] = useState<Sermon | null>(null);
+  const [sermon, setSermon] = useState<SermonsResponse<{
+    speaker: SpeakersResponse;
+  }> | null>(null);
 
   const [playbackPositionPercent, setPlaybackPositionPercent] =
     useState<number>(0);
@@ -82,7 +88,7 @@ export function AudioProvider(props: any) {
         console.warn("Error stopping audio", { error });
       }
       setSound(null);
-      setSermonUrl(null);
+      setSermon(null);
       setPlayBackStatus(null);
       setShowMiniPlayer(false);
     }
@@ -114,24 +120,6 @@ export function AudioProvider(props: any) {
     }
   };
 
-  const getSermon = async (uri: string) => {
-    const res = await fetch(`/api/sermon?uri=${encodeURIComponent(uri)}`);
-    if (res.ok) {
-      const data = await res.json();
-      setSermon(data);
-    } else {
-      setSermon(null);
-      console.error(res.statusText);
-    }
-  };
-
-  useEffect(() => {
-    if (sermonUrl != null) {
-      console.log(sermonUrl);
-      getSermon(sermonUrl);
-    }
-  }, [sermonUrl]);
-
   useEffect(() => {
     console.log(sermon);
     if (sermon?.audioUrl != null) {
@@ -151,14 +139,12 @@ export function AudioProvider(props: any) {
   useEffect(() => {
     const inFullscreenPlayerGroup = pathname.includes("player");
 
-    if (sound && !inFullscreenPlayerGroup) {
-      // Redirect to the sign-in page.
+    if (sermon && !inFullscreenPlayerGroup) {
       setShowMiniPlayer(true);
     } else if (inFullscreenPlayerGroup) {
-      // Redirect away from the sign-in page.
       setShowMiniPlayer(false);
     }
-  }, [sound, pathname]);
+  }, [sermon, pathname]);
 
   useEffect(() => {
     if (playbackStatus?.positionMillis && playbackStatus?.durationMillis) {
@@ -177,8 +163,7 @@ export function AudioProvider(props: any) {
         setPlayBackStatus,
         sermon,
         showMiniPlayer,
-        sermonUrl,
-        setSermonUrl,
+        setSermon,
         playbackPositionPercent,
         stopAudio,
         rewindAudio,

@@ -1,5 +1,4 @@
 import React from "react";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Church, AudioLines, Settings } from "lucide-react-native";
 import { Link, Tabs } from "expo-router";
 import { Pressable } from "react-native";

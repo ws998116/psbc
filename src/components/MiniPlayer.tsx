@@ -14,14 +14,14 @@ import {
 import { Pause, Play, X } from "lucide-react-native";
 import { useAudio } from "../context/audio";
 import { SubText } from "./StyledText";
-// import { useBottomTabBarHeight } from "@react-navigation/bottom-tabs";
 
 export default function MiniPlayer() {
   const router = useRouter();
   const audio = useAudio();
 
-  const tabBarHeight = 85; //useBottomTabBarHeight();
+  const tabBarHeight = Platform.OS === "android" ? 60 : 85;
   const iconColor = useThemeColor({}, "text");
+  const bgColor = useThemeColor({}, "background");
 
   if (audio?.showMiniPlayer) {
     return (
@@ -37,8 +37,14 @@ export default function MiniPlayer() {
             alignSelf: "center",
             overflow: "hidden",
             borderWidth: 0.5,
-            backgroundColor: "transparent",
+            backgroundColor:
+              Platform.OS === "android" ? bgColor : "transparent",
             maxWidth: Platform.OS === "web" ? 400 : undefined,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: 1 },
+            shadowOpacity: 0.8,
+            shadowRadius: 2,
+            elevation: 5,
           }}
           // darkColor="#111"
         >
@@ -58,7 +64,7 @@ export default function MiniPlayer() {
                   {audio.sermon?.title}
                 </Text>
                 <SubText style={{ fontFamily: "InterRegular", fontSize: 12 }}>
-                  {audio.sermon?.speaker}
+                  {audio.sermon?.expand?.speaker.name}
                 </SubText>
               </View>
               <Pressable

@@ -6,6 +6,10 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
+import { useEffect, useState } from "react";
+import { usePathname } from "expo-router";
+import { Image } from "expo-image";
+import { StatusBar } from "expo-status-bar";
 
 import {
   Text,
@@ -15,15 +19,18 @@ import {
   useThemeColor,
   verticalPadding,
 } from "@/src/components/Themed";
-import { useEffect, useState } from "react";
-import { Sermon } from "../../api/series+api";
-import { usePathname } from "expo-router";
-import { Image } from "expo-image";
 import SermonListItem from "@/src/components/SermonListItem";
 import TryAgainButton from "@/src/components/TryAgainButton";
-import { StatusBar } from "expo-status-bar";
+import {
+  Collections,
+  SermonsRecord,
+  SermonsResponse,
+  SpeakersRecord,
+  SpeakersResponse,
+} from "@/pocketbase-types";
+import pb from "@/src/pb";
 
-type SermonList = Sermon[];
+type SermonList = SermonsRecord[];
 
 export default function SermonSeries() {
   const [sermons, setSermons] = useState<SermonList>([]);
@@ -35,22 +42,31 @@ export default function SermonSeries() {
 
   useEffect(() => {
     setLoading(true);
-    const uri = `https://www.parkstreetbrethren.org${seriesPath}`;
-    getSermons(uri);
+    const seriesUrl = `https://www.parkstreetbrethren.org${seriesPath}`;
+    getSermons(seriesUrl);
   }, [seriesPath, tryAgain]);
 
-  const getSermons = async (uri: string) => {
-    const res = await fetch(`/api/sermons?uri=${encodeURIComponent(uri)}`);
-    if (res.ok) {
-      const data = await res.json();
-      setSermons(data.reverse());
-    } else {
+  const getSermons = async (seriesUrl: string) => {
+    try {
+      const filter = pb.filter("seriesUrl = {:seriesUrl}", { seriesUrl });
+      const records = await pb
+        .collection(Collections.Sermons)
+        .getList<SermonsResponse<{ speaker: SpeakersResponse }>>(1, 50, {
+          filter,
+          expand: "speaker",
+          sort: "-date",
+        });
+
+      setSermons(records.items);
+    } catch (error) {
       setErr("Something went wrong... ");
     }
     setLoading(false);
   };
 
-  const renderSermon: ListRenderItem<Sermon> = ({ item: sermon }) => {
+  const renderSermon: ListRenderItem<
+    SermonsResponse<{ speaker: SpeakersResponse }>
+  > = ({ item: sermon }) => {
     return <SermonListItem sermon={sermon} />;
   };
 
@@ -92,7 +108,7 @@ export default function SermonSeries() {
               maxWidth: 600,
             }}
             contentFit="cover"
-            source={sermons[0]?.image}
+            source={sermons[0]?.imageUrl}
             transition={200}
           />
           <FlatList

@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Pressable, StyleSheet, useColorScheme } from "react-native";
+import { Href, Link, useRouter } from "expo-router";
 
 import { HeaderText, SubText } from "./StyledText";
 import {
@@ -9,13 +10,19 @@ import {
   textDarkColor,
   textLightColor,
 } from "./Themed";
-
-import { Sermon } from "../app/api/series+api";
-import { Href, Link, useRouter } from "expo-router";
 import { useAudio } from "../context/audio";
+import {
+  SermonsRecord,
+  SermonsResponse,
+  SpeakersResponse,
+} from "@/pocketbase-types";
 // import AudioManager from "../AudioManager";
 
-export default function SermonListItem({ sermon }: { sermon: Sermon }) {
+export default function SermonListItem({
+  sermon,
+}: {
+  sermon: SermonsResponse<{ speaker: SpeakersResponse }>;
+}) {
   const audio = useAudio();
   const router = useRouter();
 
@@ -32,7 +39,7 @@ export default function SermonListItem({ sermon }: { sermon: Sermon }) {
           }
         } else {
           audio?.sound?.pauseAsync();
-          audio?.setSermonUrl(sermon.url);
+          audio?.setSermon(sermon);
         }
         router.back();
       }}
@@ -49,8 +56,10 @@ export default function SermonListItem({ sermon }: { sermon: Sermon }) {
             justifyContent: "space-between",
           }}
         >
-          <SubText style={styles.text}>{sermon.date}</SubText>
-          <SubText style={styles.text}>{sermon.speaker}</SubText>
+          <SubText style={styles.text}>
+            {new Date(sermon.date).toLocaleDateString()}
+          </SubText>
+          <SubText style={styles.text}>{sermon.expand?.speaker.name}</SubText>
         </View>
       </View>
     </Pressable>

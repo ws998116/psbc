@@ -1,15 +1,16 @@
 import { FlatList, ListRenderItem, StyleSheet } from "react-native";
+import { useEffect, useState } from "react";
 
 import {
   View,
   horizontalPadding,
   verticalPadding,
 } from "@/src/components/Themed";
-import { useEffect, useState } from "react";
 import SeriesCard from "@/src/components/SeriesCard";
-import { Series } from "../../api/series+api";
+import { Collections, SeriesRecord } from "@/pocketbase-types";
+import pb from "@/src/pb";
 
-type SeriesList = Series[];
+type SeriesList = SeriesRecord[];
 
 export default function SermonSeries() {
   const [series, setSeries] = useState<SeriesList>([]);
@@ -19,12 +20,13 @@ export default function SermonSeries() {
   }, []);
 
   const getSeries = async () => {
-    const res = await fetch("/api/series");
-    const data = await res.json();
-    setSeries(data);
+    const records = await pb.collection(Collections.Series).getFullList({
+      sort: "-date",
+    });
+    setSeries(records);
   };
 
-  const renderSeries: ListRenderItem<Series> = ({ item: series }) => {
+  const renderSeries: ListRenderItem<SeriesRecord> = ({ item: series }) => {
     if (series.title === "skeleton") {
       return <SeriesCard series={series} />;
     } else {
@@ -49,10 +51,8 @@ export default function SermonSeries() {
         // ListFooterComponent={() =>
         //   loading ? <Spinner size="large" marginVertical={25} /> : <Stack />
         // }
-        style={styles.flatlist}
         showsVerticalScrollIndicator={false}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{width: "100%"}}
       />
     </View>
   );
@@ -66,8 +66,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: horizontalPadding,
     paddingTop: verticalPadding,
     backgroundColor: "transparent",
+    width: "100%",
+    height: "100%",
   },
-  flatlist: { width: "100%", paddingHorizontal: "1%"},
+  flatlist: { width: "100%", paddingHorizontal: "1%" },
   title: {
     fontSize: 20,
     fontWeight: "bold",

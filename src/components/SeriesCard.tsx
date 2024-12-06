@@ -1,16 +1,13 @@
 import React from "react";
 import { Pressable, StyleSheet } from "react-native";
-
-import { borderRadius, useThemeColor } from "./Themed";
-
-import Colors from "@/src/constants/Colors";
 import { Image } from "expo-image";
-import { Series } from "../app/api/series+api";
 import { Href, Link } from "expo-router";
+import { borderRadius, useThemeColor } from "./Themed";
+import { SeriesRecord } from "@/pocketbase-types";
 
-export default function SeriesCard({ series }: { series: Series }) {
+export default function SeriesCard({ series }: { series: SeriesRecord }) {
   return (
-    <Link asChild href={series.link as Href<string>}>
+    <Link asChild href={series.url?.split(".org/")[1] as Href<string>}>
       <Pressable style={{ maxWidth: 600, alignSelf: "center", width: "100%" }}>
         {({ pressed }) => (
           <Image
@@ -19,11 +16,11 @@ export default function SeriesCard({ series }: { series: Series }) {
               aspectRatio: 16 / 9,
               flex: 1,
               borderRadius: borderRadius,
-              borderWidth: 1,
+              borderWidth: pressed ? 3 : 1,
               borderColor: useThemeColor({}, "border"),
             }}
             contentFit="cover"
-            source={series.image}
+            source={series.imageUrl}
             transition={200}
           />
         )}
