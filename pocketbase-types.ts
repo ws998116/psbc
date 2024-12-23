@@ -50,6 +50,7 @@ export type SermonsRecord = {
 	imageUrl: string
 	seriesTitle?: string
 	seriesUrl?: string
+	slidesUrl?: string
 	speaker?: RecordIdString
 	title: string
 	url: string
