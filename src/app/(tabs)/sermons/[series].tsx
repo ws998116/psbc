@@ -30,7 +30,7 @@ import {
 } from "@/pocketbase-types";
 import pb from "@/src/pb";
 
-type SermonList = SermonsRecord[];
+type SermonList = SermonsResponse<{ speaker: SpeakersResponse }>[];
 
 export default function SermonSeries() {
   const [sermons, setSermons] = useState<SermonList>([]);
