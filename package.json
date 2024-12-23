@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-    "typegen": "npx pocketbase-typegen --env"
+    "typegen": "npx pocketbase-typegen@1.2.1 --env"
   },
   "jest": {
     "preset": "jest-expo"
