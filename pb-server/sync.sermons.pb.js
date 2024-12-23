@@ -105,7 +105,7 @@ routerAdd("GET", "/sermons-sync", (c) => {
 
         if (buttonMatches != null) {
           audioUrl = buttonMatches[0].split('href="')[1].split('"')[0];
-          if (audioUrl.startsWith("http")) {
+          if (!audioUrl.startsWith("http")) {
             audioUrl = `https://www.parkstreetbrethren.org${audioUrl}`;
           }
           slidesUrl = buttonMatches[1].split('href="')[1].split('"')[0];
