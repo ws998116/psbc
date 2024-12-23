@@ -1,4 +1,4 @@
-import { FlatList, ListRenderItem, StyleSheet } from "react-native";
+import { FlatList, ListRenderItem, Platform, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 
 import {
@@ -34,25 +34,20 @@ export default function SermonSeries() {
     }
   };
 
+  const separator = () => <View style={styles.separator} />;
+
   return (
     <View style={styles.container}>
       <FlatList
         data={series}
         // data={loading ? skeleton : series}
-        // ListHeaderComponent={() => (
-        //   <XStack flex={1} justifyContent="center" marginVertical={10}>
-        //     {/* <H2 size={"$8"} textAlign="center">
-        //       Sermon Series
-        //     </H2> */}
-        //   </XStack>
-        // )}
         renderItem={renderSeries}
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
-        // ListFooterComponent={() =>
-        //   loading ? <Spinner size="large" marginVertical={25} /> : <Stack />
-        // }
-        showsVerticalScrollIndicator={false}
+        ItemSeparatorComponent={separator}
+        ListHeaderComponent={separator}
+        ListFooterComponent={separator}
+        showsVerticalScrollIndicator={Platform.OS === "web" ? true : false}
         contentInsetAdjustmentBehavior="automatic"
+        style={styles.flatlist}
       />
     </View>
   );
@@ -64,10 +59,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "flex-start",
     paddingHorizontal: horizontalPadding,
-    paddingTop: verticalPadding,
     backgroundColor: "transparent",
-    width: "100%",
-    height: "100%",
   },
   flatlist: { width: "100%", paddingHorizontal: "1%" },
   title: {
@@ -76,5 +68,6 @@ const styles = StyleSheet.create({
   },
   separator: {
     marginVertical: 7,
+    backgroundColor: "transparent",
   },
 });
