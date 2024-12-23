@@ -93,23 +93,24 @@ routerAdd("GET", "/sermons-sync", (c) => {
       }
 
       let audioUrl = undefined;
+      let slidesUrl = undefined;
       try {
         const sermonRes = $http.send({
           url: url,
         });
         const sermonContent = sermonRes.raw;
 
-        const audioReg = /(<a class="secondary button" href=")(.*)(" target)/g;
-        const audioMatches = sermonContent.match(audioReg);
+        const buttonReg = /(<a class="secondary button" href=")(.*)(" target)/g;
+        const buttonMatches = sermonContent.match(buttonReg);
 
-        if (audioMatches == null) {
-          audioUrl = undefined;
-        } else {
-          const audio = audioMatches[0].split('href="')[1].split('"')[0];
-          if (audio.startsWith("http")) {
-            audioUrl = audio;
-          } else {
-            audioUrl = `https://www.parkstreetbrethren.org${audio}`;
+        if (buttonMatches != null) {
+          audioUrl = buttonMatches[0].split('href="')[1].split('"')[0];
+          if (audioUrl.startsWith("http")) {
+            audioUrl = `https://www.parkstreetbrethren.org${audioUrl}`;
+          }
+          slidesUrl = buttonMatches[1].split('href="')[1].split('"')[0];
+          if (!slidesUrl.startsWith("http")) {
+            slidesUrl = `https://www.parkstreetbrethren.org${slidesUrl}`;
           }
         }
       } catch (error) {
@@ -127,7 +128,9 @@ routerAdd("GET", "/sermons-sync", (c) => {
           seriesUrl: uri,
           seriesTitle: series.title,
           audioUrl,
+          slidesUrl,
         });
+        $app.logger().info(JSON.stringify(newSermon));
         $app.dao().saveRecord(newSermon);
         added += 1;
 
