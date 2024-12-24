@@ -10,12 +10,11 @@ import {
   InterruptionModeAndroid,
   InterruptionModeIOS,
 } from "expo-av";
-import { Sound } from "expo-av/build/Audio";
 import { router, usePathname, useSegments } from "expo-router";
 import React, { useEffect, useState } from "react";
 
 interface AudioContextType {
-  sound: Sound | null;
+  sound: Audio.Sound | null;
   setSound: React.Dispatch<React.SetStateAction<Audio.Sound | null>>;
   playbackStatus: AVPlaybackStatusSuccess | null;
   setPlayBackStatus: React.Dispatch<
@@ -42,7 +41,7 @@ export function useAudio() {
 export function AudioProvider(props: any) {
   const pathname = usePathname();
 
-  const [sound, setSound] = useState<Sound | null>(null);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
   const [playbackStatus, setPlayBackStatus] =
     useState<AVPlaybackStatusSuccess | null>(null);
   const [showMiniPlayer, setShowMiniPlayer] = useState<boolean>(false);
@@ -68,7 +67,7 @@ export function AudioProvider(props: any) {
       await sound.unloadAsync();
     }
 
-    const { sound: playbackObject } = await Sound.createAsync(
+    const { sound: playbackObject } = await Audio.Sound.createAsync(
       { uri: audioLink },
       { shouldPlay: true },
       (status) => onPlaybackStatusUpdate(status),
