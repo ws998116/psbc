@@ -1,5 +1,5 @@
-import { Pressable, SafeAreaView, StyleSheet } from "react-native";
-import { useEffect, useState } from "react";
+import { Linking, Pressable, SafeAreaView, StyleSheet } from "react-native";
+import { useCallback, useEffect, useState } from "react";
 
 import {
   Text,
@@ -12,10 +12,19 @@ import {
 import { Collections, SermonsRecord } from "@/pocketbase-types";
 import { Image } from "expo-image";
 import { useAudio } from "../context/audio";
-import { Pause, Play, RedoDot, UndoDot } from "lucide-react-native";
+import {
+  CircleEllipsis,
+  FileSymlink,
+  Pause,
+  Play,
+  RedoDot,
+  ShareIcon,
+  UndoDot,
+} from "lucide-react-native";
 import { HeaderText, SubText } from "../components/StyledText";
-import pb from "../pb";
-// import AudioManager from "@/src/AudioManager";
+// import PdfRendererView from "react-native-pdf-renderer";
+import * as FileSystem from "expo-file-system";
+import * as Sharing from "expo-sharing";
 
 export default function SermonPlayer() {
   const [sermon, setSermon] = useState<SermonsRecord | null>(null);
@@ -26,6 +35,41 @@ export default function SermonPlayer() {
   const iconColor = useThemeColor({}, "background");
   const buttonColor = useThemeColor({}, "text");
 
+  const [downloading, setDownloading] = useState(true);
+  const [sharingAvailable, setSharingAvailable] = useState(false);
+  const [source, setSource] = useState<string>();
+
+  const downloadWithExpoFileSystem = useCallback(async () => {
+    try {
+      setDownloading(true);
+      console.log(audio?.sermon?.slidesUrl);
+
+      if (audio?.sermon?.slidesUrl) {
+        const response = await FileSystem.downloadAsync(
+          audio.sermon.slidesUrl,
+          FileSystem.documentDirectory + audio?.sermon?.title + ".pdf"
+        );
+        console.log("response", response);
+
+        setSource(response.uri);
+      } else {
+        throw new Error("Slides URL is undefined");
+      }
+    } catch (err) {
+      console.warn(err);
+    } finally {
+      setDownloading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    downloadWithExpoFileSystem();
+  }, [downloadWithExpoFileSystem]);
+
+  const checkSharing = useCallback(async () => {
+    setSharingAvailable(await Sharing.isAvailableAsync());
+  }, []);
+
   useEffect(() => {
     checkSharing();
   }, [checkSharing]);
@@ -33,17 +77,50 @@ export default function SermonPlayer() {
   return (
     <SafeAreaView style={styles.container}>
       <View
+        style={{
+          padding: 25,
+          backgroundColor: "transparent",
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        <View style={{ flex: 1, backgroundColor: "transparent" }} />
         <View
           style={{
             backgroundColor: "transparent",
-            width: "90%",
             alignItems: "center",
+            flex: 1,
           }}
         >
           <SubText style={{}}>{audio?.sermon?.seriesTitle}</SubText>
         </View>
+
+        <Pressable
+          style={{ flex: 1, alignItems: "flex-end" }}
+          onPress={async () => {
+            if (source) {
+              await Sharing.shareAsync(source, {
+                mimeType: "application/pdf",
+                UTI: "com.adobe.pdf",
+              });
+            }
+          }}
+        >
+          {sharingAvailable && !downloading && (
+            <ShareIcon size={25} style={{ padding: 15 }} color={buttonColor} />
+          )}
+        </Pressable>
       </View>
-      <View style={{ flex: 1, width: "90%", backgroundColor: "transparent" }}>
+      <View
+        style={{
+          flex: 2,
+          width: "90%",
+          backgroundColor: "transparent",
+          justifyContent: "center",
+          maxWidth: 600,
+        }}
+      >
         <Image
           style={{
             width: "100%",
