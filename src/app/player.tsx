@@ -26,9 +26,13 @@ export default function SermonPlayer() {
   const iconColor = useThemeColor({}, "background");
   const buttonColor = useThemeColor({}, "text");
 
+  useEffect(() => {
+    checkSharing();
+  }, [checkSharing]);
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flex: 1, paddingTop: 15, backgroundColor: "transparent" }}>
+      <View
         <View
           style={{
             backgroundColor: "transparent",

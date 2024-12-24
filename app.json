@@ -42,7 +42,6 @@
     "experiments": {
       "typedRoutes": true
     },
-    "newArchEnabled": false,
     "extra": {
       "router": {
         "origin": "https://psbc.app/"
