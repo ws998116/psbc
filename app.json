@@ -22,7 +22,8 @@
       "adaptiveIcon": {
         "foregroundImage": "src/assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.ws998116.psbc"
     },
     "web": {
       "bundler": "metro",
@@ -41,6 +42,14 @@
     "experiments": {
       "typedRoutes": true
     },
-    "newArchEnabled": true
+    "newArchEnabled": false,
+    "extra": {
+      "router": {
+        "origin": "https://psbc.app/"
+      },
+      "eas": {
+        "projectId": "1e530b79-be40-4f99-8c98-207616c032da"
+      }
+    }
   }
 }
