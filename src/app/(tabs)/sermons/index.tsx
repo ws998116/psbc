@@ -1,9 +1,16 @@
-import { FlatList, ListRenderItem, Platform, StyleSheet } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  ListRenderItem,
+  Platform,
+  StyleSheet,
+} from "react-native";
 import { useEffect, useState } from "react";
 
 import {
   View,
   horizontalPadding,
+  useThemeColor,
   verticalPadding,
 } from "@/src/components/Themed";
 import SeriesCard from "@/src/components/SeriesCard";
@@ -13,13 +20,28 @@ import pb from "@/src/pb";
 type SeriesList = SeriesRecord[];
 
 export default function SermonSeries() {
-  const [series, setSeries] = useState<SeriesList>([]);
+  const [series, setSeries] = useState<SeriesList>([
+    {
+      date: undefined,
+      imageUrl: "",
+      sermons: [],
+      title: "skeleton",
+      url: undefined,
+    },
+  ]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const textColor = useThemeColor({}, "text");
 
   const getSeries = async () => {
-    const records = await pb.collection(Collections.Series).getFullList({
-      sort: "-date",
-    });
-    setSeries(records);
+    try {
+      const records = await pb.collection(Collections.Series).getFullList({
+        sort: "-date",
+      });
+      setSeries(records);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -28,7 +50,7 @@ export default function SermonSeries() {
 
   const renderSeries: ListRenderItem<SeriesRecord> = ({ item: series }) => {
     if (series.title === "skeleton") {
-      return <SeriesCard series={series} />;
+      return <ActivityIndicator size="large" color={textColor} />;
     } else {
       return <SeriesCard series={series} />;
     }
@@ -40,7 +62,6 @@ export default function SermonSeries() {
     <View style={styles.container}>
       <FlatList
         data={series}
-        // data={loading ? skeleton : series}
         renderItem={renderSeries}
         ItemSeparatorComponent={separator}
         ListHeaderComponent={separator}
