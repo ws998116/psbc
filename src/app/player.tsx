@@ -1,4 +1,4 @@
-import { Linking, Pressable, SafeAreaView, StyleSheet } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 
 import {
@@ -9,28 +9,29 @@ import {
   useThemeColor,
   verticalPadding,
 } from "@/src/components/Themed";
-import { Collections, SermonsRecord } from "@/pocketbase-types";
+import { SermonsRecord } from "@/pocketbase-types";
 import { Image } from "expo-image";
 import { useAudio } from "../context/audio";
-import {
-  CircleEllipsis,
-  FileSymlink,
-  Pause,
-  Play,
-  RedoDot,
-  ShareIcon,
-  UndoDot,
-} from "lucide-react-native";
+import { ArrowLeft, Pause, Play } from "lucide-react-native";
 import { HeaderText, SubText } from "../components/StyledText";
-// import PdfRendererView from "react-native-pdf-renderer";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
+import { useRouter } from "expo-router";
+
+function getTime(ms: number) {
+  var minutes = Math.floor(ms / 60000);
+  const seconds = parseInt(((ms % 60000) / 1000).toFixed(0));
+  return seconds == 60
+    ? minutes + 1 + ":00"
+    : minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+}
 
 export default function SermonPlayer() {
   const [sermon, setSermon] = useState<SermonsRecord | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [err, setErr] = useState<string | null>(null);
   const audio = useAudio();
+  const router = useRouter();
 
   const iconColor = useThemeColor({}, "background");
   const buttonColor = useThemeColor({}, "text");
@@ -42,15 +43,11 @@ export default function SermonPlayer() {
   const downloadWithExpoFileSystem = useCallback(async () => {
     try {
       setDownloading(true);
-      console.log(audio?.sermon?.slidesUrl);
-
       if (audio?.sermon?.slidesUrl) {
         const response = await FileSystem.downloadAsync(
           audio.sermon.slidesUrl,
           FileSystem.documentDirectory + audio?.sermon?.title + ".pdf"
         );
-        console.log("response", response);
-
         setSource(response.uri);
       } else {
         throw new Error("Slides URL is undefined");
@@ -85,15 +82,22 @@ export default function SermonPlayer() {
           width: "100%",
         }}
       >
-        <View style={{ flex: 1, backgroundColor: "transparent" }} />
+        <Pressable
+          style={{ flex: 1, backgroundColor: "transparent" }}
+          onPress={() => router.back()}
+        >
+          <ArrowLeft size={25} color={buttonColor} />
+        </Pressable>
         <View
           style={{
             backgroundColor: "transparent",
             alignItems: "center",
-            flex: 1,
+            flex: 2,
           }}
         >
-          <SubText style={{}}>{audio?.sermon?.seriesTitle}</SubText>
+          <SubText style={{ textAlign: "center" }}>
+            {audio?.sermon?.seriesTitle}
+          </SubText>
         </View>
 
         <Pressable
@@ -107,9 +111,17 @@ export default function SermonPlayer() {
             }
           }}
         >
-          {sharingAvailable && !downloading && (
-            <ShareIcon size={25} style={{ padding: 15 }} color={buttonColor} />
-          )}
+          <View
+            style={{
+              paddingVertical: 5,
+              paddingHorizontal: 15,
+              borderRadius: borderRadius,
+              backgroundColor: buttonColor,
+              opacity: sharingAvailable && !downloading ? 1 : 0.5,
+            }}
+          >
+            <Text style={{ color: iconColor, fontWeight: "bold" }}>Slides</Text>
+          </View>
         </Pressable>
       </View>
       <View
@@ -155,7 +167,8 @@ export default function SermonPlayer() {
         <View
           style={{
             width: `100%`,
-            marginVertical: 30,
+            marginTop: 30,
+            marginBottom: 10,
             justifyContent: "center",
           }}
         >
@@ -174,6 +187,7 @@ export default function SermonPlayer() {
               height: 5,
               backgroundColor: buttonColor,
               width: `${audio?.playbackPositionPercent ?? 0}%`,
+              paddingHorizontal: 5,
               borderRadius: borderRadius,
               position: "absolute",
               justifyContent: "center",
@@ -194,6 +208,26 @@ export default function SermonPlayer() {
         <View
           style={{
             flexDirection: "row",
+            justifyContent: "space-between",
+            backgroundColor: "transparent",
+            width: `100%`,
+            paddingBottom: 20,
+          }}
+        >
+          <SubText style={{ fontFamily: "InterRegular", fontSize: 12 }}>
+            {getTime(audio?.playbackStatus?.positionMillis ?? 0)}
+          </SubText>
+          <SubText style={{ fontFamily: "InterRegular", fontSize: 12 }}>
+            {"-" +
+              getTime(
+                (audio?.playbackStatus?.durationMillis ?? 0) -
+                  (audio?.playbackStatus?.positionMillis ?? 0)
+              )}
+          </SubText>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
             justifyContent: "space-evenly",
             backgroundColor: "transparent",
           }}
@@ -205,12 +239,7 @@ export default function SermonPlayer() {
               alignSelf: "center",
             }}
           >
-            <UndoDot
-              size={25}
-              strokeWidth={3}
-              style={{ padding: 15 }}
-              color={buttonColor}
-            />
+            <Text style={{ color: buttonColor, fontWeight: "bold" }}>-15</Text>
           </Pressable>
           <Pressable
             onPress={() =>
@@ -250,12 +279,7 @@ export default function SermonPlayer() {
               alignSelf: "center",
             }}
           >
-            <RedoDot
-              size={25}
-              strokeWidth={3}
-              style={{ padding: 15 }}
-              color={buttonColor}
-            />
+            <Text style={{ color: buttonColor, fontWeight: "bold" }}>+15</Text>
           </Pressable>
         </View>
       </View>

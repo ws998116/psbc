@@ -26,8 +26,8 @@ export type ScrollViewProps = ThemeProps & DefaultScrollView["props"];
 export const horizontalPadding = 10;
 export const verticalPadding = 10;
 export const borderRadius = 7;
-export const textLightColor = "rgba(0,0,0,0.8)";
-export const textDarkColor = "rgba(255,255,255,0.8)";
+export const textLightColor = "rgba(0,0,0,1)";
+export const textDarkColor = "rgba(255,255,255,1)";
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
