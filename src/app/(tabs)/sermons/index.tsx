@@ -15,16 +15,16 @@ type SeriesList = SeriesRecord[];
 export default function SermonSeries() {
   const [series, setSeries] = useState<SeriesList>([]);
 
-  useEffect(() => {
-    getSeries();
-  }, []);
-
   const getSeries = async () => {
     const records = await pb.collection(Collections.Series).getFullList({
       sort: "-date",
     });
     setSeries(records);
   };
+
+  useEffect(() => {
+    getSeries();
+  }, [getSeries]);
 
   const renderSeries: ListRenderItem<SeriesRecord> = ({ item: series }) => {
     if (series.title === "skeleton") {
