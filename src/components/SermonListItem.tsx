@@ -32,7 +32,6 @@ export default function SermonListItem({
       onPress={() => {
         if (audio?.sermon?.url == sermon.url) {
           if (audio?.playbackStatus?.isPlaying) {
-            console.log(1);
             audio.sound?.pauseAsync();
           } else {
             audio.sound?.playAsync();
