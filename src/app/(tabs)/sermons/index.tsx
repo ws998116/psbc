@@ -3,41 +3,70 @@ import {
   FlatList,
   ListRenderItem,
   Platform,
+  Pressable,
   StyleSheet,
-} from "react-native";
-import { useEffect, useState } from "react";
+} from 'react-native';
+import { useEffect, useRef, useState } from 'react';
 
 import {
+  Text,
+  TextInput,
   View,
+  borderRadius,
   horizontalPadding,
   useThemeColor,
   verticalPadding,
-} from "@/src/components/Themed";
-import SeriesCard from "@/src/components/SeriesCard";
-import { Collections, SeriesRecord } from "@/pocketbase-types";
-import pb from "@/src/pb";
+} from '@/src/components/Themed';
+import SeriesCard from '@/src/components/SeriesCard';
+import {
+  Collections,
+  SeriesRecord,
+  SeriesResponse,
+  SermonsRecord,
+  SermonsResponse,
+  SpeakersResponse,
+} from '@/pocketbase-types';
+import pb from '@/src/pb';
+import { XCircle } from 'lucide-react-native';
 
-type SeriesList = SeriesRecord[];
+type SeriesList = (SeriesResponse & {
+  expand?: {
+    sermons: (SermonsResponse & { expand?: { speaker: SpeakersResponse } })[];
+  };
+})[];
 
 export default function SermonSeries() {
+  const [records, setRecords] = useState<SeriesList>([]);
   const [series, setSeries] = useState<SeriesList>([
     {
-      date: undefined,
-      imageUrl: "",
+      id: '',
+      created: '',
+      updated: '',
+      collectionId: '',
+      collectionName: Collections.Series,
+      date: '',
+      imageUrl: '',
       sermons: [],
-      title: "skeleton",
-      url: undefined,
+      title: 'skeleton',
+      url: '',
     },
   ]);
   const [loading, setLoading] = useState<boolean>(true);
-  const textColor = useThemeColor({}, "text");
+  const [searchText, setSearchText] = useState<string>('');
+
+  const textColor = useThemeColor({}, 'text');
+  const borderColor = useThemeColor({}, 'border');
+  const iconColor = useThemeColor({}, 'tabIconDefault');
 
   const getSeries = async () => {
     try {
-      const records = await pb.collection(Collections.Series).getFullList({
-        sort: "-date",
-      });
-      setSeries(records);
+      const records = (await pb
+        .collection(Collections.Series)
+        .getFullList<SeriesResponse>({
+          sort: '-date',
+          expand: 'sermons,sermons.speaker',
+        })) as SeriesList;
+      setRecords(records);
     } catch (error) {
       console.log(error);
     }
@@ -46,11 +75,28 @@ export default function SermonSeries() {
 
   useEffect(() => {
     getSeries();
-  }, [getSeries]);
+  }, []);
+
+  useEffect(() => {
+    const filteredData = records.filter((item) => {
+      return (
+        item.title.toLowerCase().includes(searchText.toLowerCase()) ||
+        item.expand?.sermons.some((sermon) =>
+          sermon?.title.toLowerCase().includes(searchText.toLowerCase()),
+        ) ||
+        item.expand?.sermons.some((sermon) =>
+          sermon?.expand?.speaker?.name
+            .toLowerCase()
+            .includes(searchText.toLowerCase()),
+        )
+      );
+    });
+    setSeries(filteredData);
+  }, [records, searchText]);
 
   const renderSeries: ListRenderItem<SeriesRecord> = ({ item: series }) => {
-    if (series.title === "skeleton") {
-      return <ActivityIndicator size="large" color={textColor} />;
+    if (series.title === 'skeleton') {
+      return <ActivityIndicator size='large' color={textColor} />;
     } else {
       return <SeriesCard series={series} />;
     }
@@ -60,16 +106,68 @@ export default function SermonSeries() {
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={series}
-        renderItem={renderSeries}
-        ItemSeparatorComponent={separator}
-        ListHeaderComponent={separator}
-        ListFooterComponent={separator}
-        showsVerticalScrollIndicator={Platform.OS === "web" ? true : false}
-        contentInsetAdjustmentBehavior="automatic"
-        style={styles.flatlist}
-      />
+      <View style={styles.listContainer}>
+        <FlatList
+          data={series}
+          renderItem={renderSeries}
+          ItemSeparatorComponent={separator}
+          ListHeaderComponent={
+            <View
+              style={{
+                width: '100%',
+                maxWidth: 600,
+                paddingVertical: Platform.OS === 'web' ? verticalPadding : 0,
+                paddingHorizontal: horizontalPadding,
+                marginVertical: verticalPadding,
+                backgroundColor: borderColor,
+                borderRadius: borderRadius,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignSelf: 'center',
+              }}
+            >
+              <TextInput
+                placeholder='Search for a series, sermon, or speaker...'
+                value={searchText}
+                onChangeText={(text) => {
+                  setSearchText(text);
+                }}
+                style={{ width: '90%', outline: 'none' }}
+              />
+              <Pressable
+                onPress={() => setSearchText('')}
+                style={{
+                  alignSelf: 'center',
+                }}
+              >
+                <XCircle
+                  color={iconColor}
+                  style={{
+                    opacity: searchText.length > 0 ? 1 : 0,
+                  }}
+                />
+              </Pressable>
+            </View>
+          }
+          ListFooterComponent={separator}
+          showsVerticalScrollIndicator={Platform.OS === 'web' ? true : false}
+          contentInsetAdjustmentBehavior='automatic'
+          style={styles.flatlist}
+        />
+        {/* <View
+          style={{
+            width: 50,
+            height: "100%",
+            paddingVertical: verticalPadding,
+            justifyContent: "space-between",
+            alignContent: "center",
+            backgroundColor: "transparent",
+          }}
+        >
+          <SubText style={{ textAlign: "center" }}>JAN</SubText>
+          <SubText style={{ textAlign: "center" }}>DEC</SubText>
+        </View> */}
+      </View>
     </View>
   );
 }
@@ -77,18 +175,27 @@ export default function SermonSeries() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
-    paddingHorizontal: horizontalPadding,
-    backgroundColor: "transparent",
+    justifyContent: 'flex-start',
+    paddingHorizontal: Platform.OS === 'web' ? 0 : horizontalPadding,
+    backgroundColor: 'transparent',
   },
-  flatlist: { width: "100%", paddingHorizontal: "1%" },
+  listContainer: {
+    flex: 1,
+    justifyContent: 'flex-start',
+    // paddingHorizontal: horizontalPadding,
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+  },
+  flatlist: {
+    width: '100%',
+    // paddingHorizontal: "1%"
+  },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   separator: {
-    marginVertical: 7,
-    backgroundColor: "transparent",
+    marginVertical: 2,
+    backgroundColor: 'transparent',
   },
 });

@@ -5,7 +5,6 @@ import { useClientOnlyValue } from "@/src/components/useClientOnlyValue";
 import { Platform } from "react-native";
 
 export default function TabLayout() {
-
   return (
     <Stack
       screenOptions={{

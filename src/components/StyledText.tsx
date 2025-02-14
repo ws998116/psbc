@@ -26,3 +26,13 @@ export function SubText(props: TextProps) {
     />
   );
 }
+
+export function BodyText(props: TextProps) {
+  const color = useThemeColor({}, "subtext");
+  return (
+    <Text
+      {...props}
+      style={[{ fontFamily: "Inter", fontSize: 16, color }, props.style]}
+    />
+  );
+}

@@ -5,11 +5,11 @@ import {
   Platform,
   Pressable,
   StyleSheet,
-} from "react-native";
-import { useEffect, useState } from "react";
-import { usePathname } from "expo-router";
-import { Image } from "expo-image";
-import { StatusBar } from "expo-status-bar";
+} from 'react-native';
+import { useEffect, useState } from 'react';
+import { usePathname } from 'expo-router';
+import { Image } from 'expo-image';
+import { StatusBar } from 'expo-status-bar';
 
 import {
   Text,
@@ -18,17 +18,17 @@ import {
   horizontalPadding,
   useThemeColor,
   verticalPadding,
-} from "@/src/components/Themed";
-import SermonListItem from "@/src/components/SermonListItem";
-import TryAgainButton from "@/src/components/TryAgainButton";
+} from '@/src/components/Themed';
+import SermonListItem from '@/src/components/SermonListItem';
+import TryAgainButton from '@/src/components/TryAgainButton';
 import {
   Collections,
   SermonsRecord,
   SermonsResponse,
   SpeakersRecord,
   SpeakersResponse,
-} from "@/pocketbase-types";
-import pb from "@/src/pb";
+} from '@/pocketbase-types';
+import pb from '@/src/pb';
 
 type SermonList = SermonsResponse<{ speaker: SpeakersResponse }>[];
 
@@ -48,18 +48,18 @@ export default function SermonSeries() {
 
   const getSermons = async (seriesUrl: string) => {
     try {
-      const filter = pb.filter("seriesUrl = {:seriesUrl}", { seriesUrl });
+      const filter = pb.filter('seriesUrl = {:seriesUrl}', { seriesUrl });
       const records = await pb
         .collection(Collections.Sermons)
         .getList<SermonsResponse<{ speaker: SpeakersResponse }>>(1, 50, {
           filter,
-          expand: "speaker",
-          sort: "-date",
+          expand: 'speaker',
+          sort: '-date',
         });
 
       setSermons(records.items);
     } catch (error) {
-      setErr("Something went wrong... ");
+      setErr('Something went wrong... ');
     }
     setLoading(false);
   };
@@ -75,19 +75,25 @@ export default function SermonSeries() {
       {loading ? (
         <View
           style={{
-            justifyContent: "center",
+            justifyContent: 'center',
             flex: 1,
-            backgroundColor: "transparent",
+            backgroundColor: 'transparent',
           }}
         >
-          <ActivityIndicator size={"large"} />
+          <ActivityIndicator size={'large'} />
         </View>
       ) : err ? (
-        <View style={{ justifyContent: "center", flex: 1 }}>
+        <View
+          style={{
+            justifyContent: 'center',
+            flex: 1,
+            backgroundColor: 'transparent',
+          }}
+        >
           <Text
             style={styles.errorText}
-            lightColor="rgba(0,0,0,0.8)"
-            darkColor="rgba(255,255,255,0.8)"
+            lightColor='rgba(0,0,0,0.8)'
+            darkColor='rgba(255,255,255,0.8)'
           >
             {err}
           </Text>
@@ -102,12 +108,12 @@ export default function SermonSeries() {
         <>
           <Image
             style={{
-              width: "100%",
+              width: '100%',
               aspectRatio: 16 / 9,
               borderRadius: borderRadius,
               maxWidth: 600,
             }}
-            contentFit="cover"
+            contentFit='cover'
             source={sermons[0]?.imageUrl}
             transition={200}
           />
@@ -122,17 +128,17 @@ export default function SermonSeries() {
             //   />
             // )}
             ListFooterComponent={
-              <View style={{ height: 150, backgroundColor: "transparent" }} />
+              <View style={{ height: 150, backgroundColor: 'transparent' }} />
             }
             style={styles.flatlist}
             showsVerticalScrollIndicator={false}
-            contentInsetAdjustmentBehavior="automatic"
+            contentInsetAdjustmentBehavior='automatic'
           />
         </>
       )}
 
       {/* Use a light status bar on iOS to account for the black space above the modal */}
-      <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+      <StatusBar style={Platform.OS === 'ios' ? 'light' : 'auto'} />
     </View>
   );
 }
@@ -140,23 +146,23 @@ export default function SermonSeries() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "flex-start",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     paddingHorizontal: horizontalPadding,
     paddingTop: verticalPadding,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
   flatlist: {
     flex: 1,
-    width: "100%",
-    paddingHorizontal: "1%",
+    width: '100%',
+    paddingHorizontal: '1%',
     paddingTop: 7,
     // maxWidth: 600,
   },
   separator: {
     marginVertical: 4,
     height: 1,
-    width: "100%",
+    width: '100%',
   },
   errorText: {
     fontSize: 20,
