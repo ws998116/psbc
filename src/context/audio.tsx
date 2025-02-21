@@ -2,16 +2,16 @@ import {
   SermonsRecord,
   SermonsResponse,
   SpeakersResponse,
-} from "@/pocketbase-types";
+} from '@/pocketbase-types';
 import {
   AVPlaybackStatus,
   AVPlaybackStatusSuccess,
   Audio,
   InterruptionModeAndroid,
   InterruptionModeIOS,
-} from "expo-av";
-import { router, usePathname, useSegments } from "expo-router";
-import React, { useEffect, useState } from "react";
+} from 'expo-av';
+import { router, usePathname, useSegments } from 'expo-router';
+import React, { useEffect, useState } from 'react';
 
 interface AudioContextType {
   sound: Audio.Sound | null;
@@ -26,6 +26,7 @@ interface AudioContextType {
     React.SetStateAction<SermonsResponse<{ speaker: SpeakersResponse }> | null>
   >;
   playbackPositionPercent: number;
+  setPlaybackPercent: (percent: number) => Promise<void>;
   stopAudio: () => Promise<void>;
   rewindAudio: () => Promise<void>;
   fastforwardAudio: () => Promise<void>;
@@ -54,7 +55,7 @@ export function AudioProvider(props: any) {
     useState<number>(0);
 
   const onPlaybackStatusUpdate = (status: AVPlaybackStatus) => {
-    if ("error" in status) {
+    if ('error' in status) {
       console.error(status);
     } else {
       let s = status as AVPlaybackStatusSuccess;
@@ -79,12 +80,12 @@ export function AudioProvider(props: any) {
 
   const stopAudio = async () => {
     if (sound != null) {
-      console.log("Audio", "stopping");
+      console.log('Audio', 'stopping');
       try {
         await sound.stopAsync();
         await sound.unloadAsync();
       } catch (error) {
-        console.warn("Error stopping audio", { error });
+        console.warn('Error stopping audio', { error });
       }
       setSound(null);
       setSermon(null);
@@ -93,28 +94,41 @@ export function AudioProvider(props: any) {
     }
   };
 
+  const setPlaybackPercent = async (percent: number) => {
+    if (sound != null) {
+      console.log('Audio', 'set percent', percent);
+      try {
+        await sound.setPositionAsync(
+          (percent / 100) * (playbackStatus?.durationMillis ?? 0)
+        );
+      } catch (error) {
+        console.warn('Error setting audio playback percent', { error });
+      }
+    }
+  };
+
   const rewindAudio = async () => {
     if (sound != null) {
-      console.log("Audio", "rewinding");
+      console.log('Audio', 'rewinding');
       try {
         await sound.setPositionAsync(
           (playbackStatus?.positionMillis ?? 15000) - 15000
         );
       } catch (error) {
-        console.warn("Error rewinding audio", { error });
+        console.warn('Error rewinding audio', { error });
       }
     }
   };
 
   const fastforwardAudio = async () => {
     if (sound != null) {
-      console.log("Audio", "fastforwarding");
+      console.log('Audio', 'fastforwarding');
       try {
         await sound.setPositionAsync(
           (playbackStatus?.positionMillis ?? 15000) + 15000
         );
       } catch (error) {
-        console.warn("Error fastforwarding audio", { error });
+        console.warn('Error fastforwarding audio', { error });
       }
     }
   };
@@ -136,7 +150,7 @@ export function AudioProvider(props: any) {
   }, []);
 
   useEffect(() => {
-    const inFullscreenPlayerGroup = pathname.includes("player");
+    const inFullscreenPlayerGroup = pathname.includes('player');
 
     if (sermon && !inFullscreenPlayerGroup) {
       setShowMiniPlayer(true);
@@ -164,6 +178,7 @@ export function AudioProvider(props: any) {
         showMiniPlayer,
         setSermon,
         playbackPositionPercent,
+        setPlaybackPercent,
         stopAudio,
         rewindAudio,
         fastforwardAudio,

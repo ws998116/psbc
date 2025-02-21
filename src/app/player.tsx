@@ -1,5 +1,5 @@
-import { Pressable, SafeAreaView, StyleSheet } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { Pressable, SafeAreaView, StyleSheet } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   Text,
@@ -8,22 +8,23 @@ import {
   horizontalPadding,
   useThemeColor,
   verticalPadding,
-} from "@/src/components/Themed";
-import { SermonsRecord } from "@/pocketbase-types";
-import { Image } from "expo-image";
-import { useAudio } from "../context/audio";
-import { ArrowLeft, Pause, Play } from "lucide-react-native";
-import { HeaderText, SubText } from "../components/StyledText";
-import * as FileSystem from "expo-file-system";
-import * as Sharing from "expo-sharing";
-import { useRouter } from "expo-router";
+} from '@/src/components/Themed';
+import { SermonsRecord } from '@/pocketbase-types';
+import { Image } from 'expo-image';
+import { useAudio } from '../context/audio';
+import { ArrowLeft, Pause, Play } from 'lucide-react-native';
+import { HeaderText, SubText } from '../components/StyledText';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
+import { useRouter } from 'expo-router';
+import Slider from '@react-native-community/slider';
 
 function getTime(ms: number) {
   var minutes = Math.floor(ms / 60000);
   const seconds = parseInt(((ms % 60000) / 1000).toFixed(0));
   return seconds == 60
-    ? minutes + 1 + ":00"
-    : minutes + ":" + (seconds < 10 ? "0" : "") + seconds;
+    ? minutes + 1 + ':00'
+    : minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 }
 
 export default function SermonPlayer() {
@@ -33,8 +34,9 @@ export default function SermonPlayer() {
   const audio = useAudio();
   const router = useRouter();
 
-  const iconColor = useThemeColor({}, "background");
-  const buttonColor = useThemeColor({}, "text");
+  const iconColor = useThemeColor({}, 'background');
+  const buttonColor = useThemeColor({}, 'text');
+  const viewColor = useThemeColor({}, 'tabIconDefault');
 
   const [downloading, setDownloading] = useState(true);
   const [sharingAvailable, setSharingAvailable] = useState(false);
@@ -46,11 +48,11 @@ export default function SermonPlayer() {
       if (audio?.sermon?.slidesUrl) {
         const response = await FileSystem.downloadAsync(
           audio.sermon.slidesUrl,
-          FileSystem.documentDirectory + audio?.sermon?.title + ".pdf"
+          FileSystem.documentDirectory + audio?.sermon?.title + '.pdf'
         );
         setSource(response.uri);
       } else {
-        throw new Error("Slides URL is undefined");
+        throw new Error('Slides URL is undefined');
       }
     } catch (err) {
       console.warn(err);
@@ -76,37 +78,37 @@ export default function SermonPlayer() {
       <View
         style={{
           padding: 25,
-          backgroundColor: "transparent",
-          flexDirection: "row",
-          alignItems: "center",
-          width: "100%",
+          backgroundColor: 'transparent',
+          flexDirection: 'row',
+          alignItems: 'center',
+          width: '100%',
         }}
       >
         <Pressable
-          style={{ flex: 1, backgroundColor: "transparent" }}
+          style={{ flex: 1, backgroundColor: 'transparent' }}
           onPress={() => router.back()}
         >
           <ArrowLeft size={25} color={buttonColor} />
         </Pressable>
         <View
           style={{
-            backgroundColor: "transparent",
-            alignItems: "center",
+            backgroundColor: 'transparent',
+            alignItems: 'center',
             flex: 2,
           }}
         >
-          <SubText style={{ textAlign: "center" }}>
+          <SubText style={{ textAlign: 'center' }}>
             {audio?.sermon?.seriesTitle}
           </SubText>
         </View>
 
         <Pressable
-          style={{ flex: 1, alignItems: "flex-end" }}
+          style={{ flex: 1, alignItems: 'flex-end' }}
           onPress={async () => {
             if (source) {
               await Sharing.shareAsync(source, {
-                mimeType: "application/pdf",
-                UTI: "com.adobe.pdf",
+                mimeType: 'application/pdf',
+                UTI: 'com.adobe.pdf',
               });
             }
           }}
@@ -120,22 +122,22 @@ export default function SermonPlayer() {
               opacity: sharingAvailable && !downloading ? 1 : 0.5,
             }}
           >
-            <Text style={{ color: iconColor, fontWeight: "bold" }}>Slides</Text>
+            <Text style={{ color: iconColor, fontWeight: 'bold' }}>Slides</Text>
           </View>
         </Pressable>
       </View>
       <View
         style={{
           flex: 2,
-          width: "90%",
-          backgroundColor: "transparent",
-          justifyContent: "center",
+          width: '90%',
+          backgroundColor: 'transparent',
+          justifyContent: 'center',
           maxWidth: 600,
         }}
       >
         <Image
           style={{
-            width: "100%",
+            width: '100%',
             aspectRatio: 16 / 9,
             borderRadius: borderRadius,
           }}
@@ -147,78 +149,47 @@ export default function SermonPlayer() {
       <View
         style={{
           flex: 1,
-          justifyContent: "center",
-          width: "90%",
-          backgroundColor: "transparent",
+          justifyContent: 'center',
+          width: '90%',
+          backgroundColor: 'transparent',
         }}
       >
         <View
           style={{
-            backgroundColor: "transparent",
+            backgroundColor: 'transparent',
           }}
         >
           <HeaderText style={styles.headerText}>
             {audio?.sermon?.title}
           </HeaderText>
-          <SubText style={{ fontFamily: "InterRegular", fontSize: 16 }}>
+          <SubText style={{ fontFamily: 'InterRegular', fontSize: 16 }}>
             {audio?.sermon?.expand?.speaker.name}
           </SubText>
         </View>
+        <Slider
+          style={{ width: '100%', height: 5, marginTop: 30, marginBottom: 10 }}
+          minimumValue={0}
+          maximumValue={100}
+          minimumTrackTintColor={buttonColor}
+          maximumTrackTintColor={viewColor}
+          thumbTintColor={buttonColor}
+          value={audio?.playbackPositionPercent ?? 0}
+          onSlidingComplete={(val) => audio?.setPlaybackPercent(val)}
+        />
         <View
           style={{
-            width: `100%`,
-            marginTop: 30,
-            marginBottom: 10,
-            justifyContent: "center",
-          }}
-        >
-          <View
-            style={{
-              height: 5,
-              backgroundColor: buttonColor,
-              opacity: 0.3,
-              width: `100%`,
-              borderRadius: borderRadius,
-              position: "absolute",
-            }}
-          />
-          <View
-            style={{
-              height: 5,
-              backgroundColor: buttonColor,
-              width: `${audio?.playbackPositionPercent ?? 0}%`,
-              paddingHorizontal: 5,
-              borderRadius: borderRadius,
-              position: "absolute",
-              justifyContent: "center",
-            }}
-          >
-            <View
-              style={{
-                height: 10,
-                width: 10,
-                backgroundColor: buttonColor,
-                borderRadius: 100,
-                position: "absolute",
-                right: 0,
-              }}
-            />
-          </View>
-        </View>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            backgroundColor: "transparent",
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            backgroundColor: 'transparent',
             width: `100%`,
             paddingBottom: 20,
           }}
         >
-          <SubText style={{ fontFamily: "InterRegular", fontSize: 12 }}>
+          <SubText style={{ fontFamily: 'InterRegular', fontSize: 12 }}>
             {getTime(audio?.playbackStatus?.positionMillis ?? 0)}
           </SubText>
-          <SubText style={{ fontFamily: "InterRegular", fontSize: 12 }}>
-            {"-" +
+          <SubText style={{ fontFamily: 'InterRegular', fontSize: 12 }}>
+            {'-' +
               getTime(
                 (audio?.playbackStatus?.durationMillis ?? 0) -
                   (audio?.playbackStatus?.positionMillis ?? 0)
@@ -227,19 +198,19 @@ export default function SermonPlayer() {
         </View>
         <View
           style={{
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            backgroundColor: "transparent",
+            flexDirection: 'row',
+            justifyContent: 'space-evenly',
+            backgroundColor: 'transparent',
           }}
         >
           <Pressable
             onPress={() => audio?.rewindAudio()}
             style={{
               padding: 15,
-              alignSelf: "center",
+              alignSelf: 'center',
             }}
           >
-            <Text style={{ color: buttonColor, fontWeight: "bold" }}>-15</Text>
+            <Text style={{ color: buttonColor, fontWeight: 'bold' }}>-15</Text>
           </Pressable>
           <Pressable
             onPress={() =>
@@ -251,7 +222,7 @@ export default function SermonPlayer() {
               backgroundColor: buttonColor,
               borderRadius: 100,
               padding: 15,
-              alignSelf: "center",
+              alignSelf: 'center',
             }}
           >
             {audio?.playbackStatus?.isPlaying ? (
@@ -276,10 +247,10 @@ export default function SermonPlayer() {
             onPress={() => audio?.fastforwardAudio()}
             style={{
               padding: 15,
-              alignSelf: "center",
+              alignSelf: 'center',
             }}
           >
-            <Text style={{ color: buttonColor, fontWeight: "bold" }}>+15</Text>
+            <Text style={{ color: buttonColor, fontWeight: 'bold' }}>+15</Text>
           </Pressable>
         </View>
       </View>
@@ -290,16 +261,16 @@ export default function SermonPlayer() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: horizontalPadding,
     paddingTop: verticalPadding,
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
   },
-  flatlist: { flex: 1, width: "100%", paddingHorizontal: "1%" },
+  flatlist: { flex: 1, width: '100%', paddingHorizontal: '1%' },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   separator: {
     marginVertical: 7,
