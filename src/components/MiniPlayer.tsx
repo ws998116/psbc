@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
-import { Platform, Pressable } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import { Link, useRouter } from "expo-router";
-import { BlurView } from "expo-blur";
+import React, { useEffect } from 'react';
+import { Platform, Pressable } from 'react-native';
+import { Link, useRouter } from 'expo-router';
+import { BlurView } from 'expo-blur';
 import {
   Text,
   View,
@@ -10,37 +9,37 @@ import {
   horizontalPadding,
   useThemeColor,
   verticalPadding,
-} from "./Themed";
-import { Pause, Play, X } from "lucide-react-native";
-import { useAudio } from "../context/audio";
-import { SubText } from "./StyledText";
+} from './Themed';
+import { Pause, Play, X } from 'lucide-react-native';
+import { useAudio } from '../context/audio';
+import { SubText } from './StyledText';
 
 export default function MiniPlayer() {
   const router = useRouter();
   const audio = useAudio();
 
-  const tabBarHeight = Platform.OS === "android" ? 60 : 85;
-  const iconColor = useThemeColor({}, "text");
-  const bgColor = useThemeColor({}, "background");
+  const tabBarHeight = Platform.OS === 'android' ? 60 : 85;
+  const iconColor = useThemeColor({}, 'text');
+  const bgColor = useThemeColor({}, 'background');
 
   if (audio?.showMiniPlayer) {
     return (
-      <Pressable onPress={() => router.push("/player")}>
+      <Pressable onPress={() => router.push('/player')}>
         <View
           style={{
-            position: "absolute",
+            position: 'absolute',
             bottom: tabBarHeight,
-            right: Platform.OS === "web" ? tabBarHeight : undefined,
-            width: "96%",
+            right: Platform.OS === 'web' ? tabBarHeight : undefined,
+            width: '96%',
             height: 55,
             borderRadius: borderRadius,
-            alignSelf: "center",
-            overflow: "hidden",
+            alignSelf: 'center',
+            overflow: 'hidden',
             borderWidth: 0.5,
             backgroundColor:
-              Platform.OS === "android" ? bgColor : "transparent",
-            maxWidth: Platform.OS === "web" ? 400 : undefined,
-            shadowColor: "#000",
+              Platform.OS === 'android' ? bgColor : 'transparent',
+            maxWidth: Platform.OS === 'web' ? 400 : undefined,
+            shadowColor: '#000',
             shadowOffset: { width: 0, height: 1 },
             shadowOpacity: 0.8,
             shadowRadius: 2,
@@ -51,19 +50,19 @@ export default function MiniPlayer() {
           <BlurView intensity={100} style={{ flex: 1 }}>
             <View
               style={{
-                alignItems: "center",
-                justifyContent: "space-between",
-                flexDirection: "row",
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
                 flex: 1,
                 paddingHorizontal: 20,
-                backgroundColor: "transparent",
+                backgroundColor: 'transparent',
               }}
             >
-              <View style={{ backgroundColor: "transparent", width: "70%" }}>
-                <Text style={{ fontFamily: "InterMedium" }}>
+              <View style={{ backgroundColor: 'transparent', width: '70%' }}>
+                <Text style={{ fontFamily: 'InterMedium' }}>
                   {audio.sermon?.title}
                 </Text>
-                <SubText style={{ fontFamily: "InterRegular", fontSize: 12 }}>
+                <SubText style={{ fontFamily: 'InterRegular', fontSize: 12 }}>
                   {audio.sermon?.expand?.speaker.name}
                 </SubText>
               </View>

@@ -1,8 +1,7 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from 'react-native';
 
-import EditScreenInfo from "@/src/components/EditScreenInfo";
-import { Text, View } from "@/src/components/Themed";
-import { Image } from "expo-image";
+import { Text, View } from '@/src/components/Themed';
+import { Image } from 'expo-image';
 
 export default function TabOneScreen() {
   return (
@@ -38,18 +37,18 @@ export default function TabOneScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
-    justifyContent: "flex-start",
+    alignItems: 'center',
+    justifyContent: 'flex-start',
     // marginTop: "5%",
-    paddingBottom: "25%",
+    paddingBottom: '25%',
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   separator: {
     marginVertical: 30,
     height: 1,
-    width: "80%",
+    width: '80%',
   },
 });
