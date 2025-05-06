@@ -52,7 +52,7 @@ export default function SermonPlayer() {
         );
         setSource(response.uri);
       } else {
-        throw new Error('Slides URL is undefined');
+        throw new Error('Slides URL is blank');
       }
     } catch (err) {
       console.warn(err);
@@ -113,17 +113,21 @@ export default function SermonPlayer() {
             }
           }}
         >
-          <View
-            style={{
-              paddingVertical: 5,
-              paddingHorizontal: 15,
-              borderRadius: borderRadius,
-              backgroundColor: buttonColor,
-              opacity: sharingAvailable && !downloading ? 1 : 0.5,
-            }}
-          >
-            <Text style={{ color: iconColor, fontWeight: 'bold' }}>Slides</Text>
-          </View>
+          {audio?.sermon?.slidesUrl !== '' && (
+            <View
+              style={{
+                paddingVertical: 5,
+                paddingHorizontal: 15,
+                borderRadius: borderRadius,
+                backgroundColor: buttonColor,
+                opacity: sharingAvailable && !downloading ? 1 : 0.5,
+              }}
+            >
+              <Text style={{ color: iconColor, fontWeight: 'bold' }}>
+                Slides
+              </Text>
+            </View>
+          )}
         </Pressable>
       </View>
       <View
