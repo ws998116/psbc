@@ -9,7 +9,6 @@ import {
   useThemeColor,
   verticalPadding,
 } from '@/src/components/Themed';
-import { SermonsRecord } from '@/pocketbase-types';
 import { Image } from 'expo-image';
 import { useAudio } from '../context/audio';
 import { ArrowLeft, Pause, Play } from 'lucide-react-native';
@@ -19,18 +18,15 @@ import * as Sharing from 'expo-sharing';
 import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
 
-function getTime(ms: number) {
-  var minutes = Math.floor(ms / 60000);
-  const seconds = parseInt(((ms % 60000) / 1000).toFixed(0));
+function getTime(sec: number) {
+  var minutes = Math.floor(sec / 60);
+  const seconds = parseInt((sec % 60).toFixed(0));
   return seconds == 60
     ? minutes + 1 + ':00'
     : minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
 }
 
 export default function SermonPlayer() {
-  const [sermon, setSermon] = useState<SermonsRecord | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [err, setErr] = useState<string | null>(null);
   const audio = useAudio();
   const router = useRouter();
 
@@ -177,8 +173,20 @@ export default function SermonPlayer() {
           minimumTrackTintColor={buttonColor}
           maximumTrackTintColor={viewColor}
           thumbTintColor={buttonColor}
-          value={audio?.playbackPositionPercent ?? 0}
-          onSlidingComplete={(val) => audio?.setPlaybackPercent(val)}
+          value={
+            audio?.player?.currentTime !== undefined &&
+            audio?.player?.duration !== undefined &&
+            audio?.player?.duration > 0
+              ? (audio.player.currentTime / audio.player.duration) * 100
+              : 0
+          }
+          onSlidingComplete={(val) => {
+            audio?.player.seekTo((val / 100) * audio?.player?.duration);
+            audio?.player.play();
+          }}
+          onSlidingStart={() => {
+            audio?.player.pause();
+          }}
         />
         <View
           style={{
@@ -190,14 +198,16 @@ export default function SermonPlayer() {
           }}
         >
           <SubText style={{ fontFamily: 'InterRegular', fontSize: 12 }}>
-            {getTime(audio?.playbackStatus?.positionMillis ?? 0)}
+            {getTime(audio?.player.currentTime ?? 0)}
           </SubText>
           <SubText style={{ fontFamily: 'InterRegular', fontSize: 12 }}>
             {'-' +
-              getTime(
-                (audio?.playbackStatus?.durationMillis ?? 0) -
-                  (audio?.playbackStatus?.positionMillis ?? 0)
-              )}
+              ((audio?.player.currentTime ?? 0) >= (audio?.player.duration ?? 0)
+                ? '0:00'
+                : getTime(
+                    (audio?.player.duration ?? 0) -
+                      (audio?.player.currentTime ?? 0)
+                  ))}
           </SubText>
         </View>
         <View
@@ -208,7 +218,7 @@ export default function SermonPlayer() {
           }}
         >
           <Pressable
-            onPress={() => audio?.rewindAudio()}
+            onPress={() => audio?.player.seekTo(audio?.player.currentTime - 15)}
             style={{
               padding: 15,
               alignSelf: 'center',
@@ -218,9 +228,9 @@ export default function SermonPlayer() {
           </Pressable>
           <Pressable
             onPress={() =>
-              audio?.playbackStatus?.isPlaying
-                ? audio?.sound?.pauseAsync()
-                : audio?.sound?.playAsync()
+              audio?.player.playing
+                ? audio?.player.pause()
+                : audio?.player.play()
             }
             style={{
               backgroundColor: buttonColor,
@@ -229,7 +239,7 @@ export default function SermonPlayer() {
               alignSelf: 'center',
             }}
           >
-            {audio?.playbackStatus?.isPlaying ? (
+            {audio?.player.playing ? (
               <Pause
                 size={25}
                 strokeWidth={3}
@@ -248,7 +258,7 @@ export default function SermonPlayer() {
             )}
           </Pressable>
           <Pressable
-            onPress={() => audio?.fastforwardAudio()}
+            onPress={() => audio?.player.seekTo(audio?.player.currentTime + 15)}
             style={{
               padding: 15,
               alignSelf: 'center',

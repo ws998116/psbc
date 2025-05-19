@@ -68,12 +68,12 @@ export default function MiniPlayer() {
               </View>
               <Pressable
                 onPress={() =>
-                  audio?.playbackStatus?.isPlaying
-                    ? audio?.sound?.pauseAsync()
-                    : audio?.sound?.playAsync()
+                  audio?.player?.playing
+                    ? audio?.player?.pause()
+                    : audio?.player?.play()
                 }
               >
-                {audio?.playbackStatus?.isPlaying ? (
+                {audio?.player?.playing ? (
                   <Pause
                     size={25}
                     strokeWidth={3}
@@ -105,7 +105,9 @@ export default function MiniPlayer() {
               style={{
                 height: 3,
                 backgroundColor: iconColor,
-                width: `${audio.playbackPositionPercent}%`,
+                width: `${
+                  (audio.player.currentTime / audio.player.duration) * 100
+                }%`,
                 borderRadius: borderRadius,
               }}
             />

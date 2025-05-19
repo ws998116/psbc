@@ -1,22 +1,21 @@
-import React, { useEffect } from "react";
-import { Pressable, StyleSheet, useColorScheme } from "react-native";
-import { Href, Link, useRouter } from "expo-router";
+import React, { useEffect } from 'react';
+import { Pressable, StyleSheet, useColorScheme } from 'react-native';
+import { Href, Link, useRouter } from 'expo-router';
 
-import { HeaderText, SubText } from "./StyledText";
+import { HeaderText, SubText } from './StyledText';
 import {
   Text,
   View,
   borderRadius,
   textDarkColor,
   textLightColor,
-} from "./Themed";
-import { useAudio } from "../context/audio";
+} from './Themed';
+import { useAudio } from '../context/audio';
 import {
   SermonsRecord,
   SermonsResponse,
   SpeakersResponse,
-} from "@/pocketbase-types";
-// import AudioManager from "../AudioManager";
+} from '@/pocketbase-types';
 
 export default function SermonListItem({
   sermon,
@@ -30,16 +29,7 @@ export default function SermonListItem({
     // <Link asChild href={"/player"}>
     <Pressable
       onPress={() => {
-        if (audio?.sermon?.url == sermon.url) {
-          if (audio?.playbackStatus?.isPlaying) {
-            audio.sound?.pauseAsync();
-          } else {
-            audio.sound?.playAsync();
-          }
-        } else {
-          audio?.sound?.pauseAsync();
-          audio?.setSermon(sermon);
-        }
+        audio?.setSermon(sermon);
         router.back();
       }}
     >
@@ -50,9 +40,9 @@ export default function SermonListItem({
           </View> */}
         <View
           style={{
-            backgroundColor: "transparent",
-            flexDirection: "row",
-            justifyContent: "space-between",
+            backgroundColor: 'transparent',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
           }}
         >
           <SubText style={styles.text}>
@@ -80,7 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: borderRadius,
     borderWidth: 1,
     maxWidth: 600,
-    alignSelf: "center",
-    width: "100%",
+    alignSelf: 'center',
+    width: '100%',
   },
 });
