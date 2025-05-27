@@ -1,25 +1,49 @@
 import { ScrollView, StyleSheet } from 'react-native';
 
 import { Text, View } from '@/src/components/Themed';
-import { Image } from 'expo-image';
+import { useEffect, useState } from 'react';
+import {
+  Collections,
+  SermonsResponse,
+  SpeakersResponse,
+} from '@/pocketbase-types';
+import pb from '@/src/pb';
+import SermonCard from '@/src/components/SermonCard';
+import { ListResult } from 'pocketbase';
 
 export default function TabOneScreen() {
+  const [latestSermon, setLatestSermon] =
+    useState<SermonsResponse<{ speaker: SpeakersResponse }>>();
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const getLatestSermon = async () => {
+    try {
+      const records = (await pb
+        .collection(Collections.Sermons)
+        .getList<SermonsResponse>(1, 1, {
+          expand: 'speaker',
+          sort: '-date',
+        })) as ListResult<
+        SermonsResponse<{
+          speaker: SpeakersResponse;
+        }>
+      >;
+      setLatestSermon(records.items[0]);
+    } catch (error) {
+      console.log(error);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getLatestSermon();
+  }, []);
+
   return (
     <ScrollView
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
-      {/* <Image
-        source={
-          "https://www.parkstreetbrethren.org/upload/images/spire_shoot/first_service/resized_for_content_use/600_resize2016_06_05_parkstreet_115.jpg"
-        }
-        style={{
-          width: "100%",
-          height: "100%",
-          padding: "5%",
-          borderRadius: borderRadius,
-        }}
-      /> */}
       <View
         style={styles.separator}
         lightColor="#eee"
@@ -31,6 +55,10 @@ export default function TabOneScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
+      <Text style={styles.title}>Listen to the latest sermon</Text>
+      <View style={{ width: '90%', backgroundColor: 'transparent' }}>
+        <SermonCard sermon={latestSermon} />
+      </View>
     </ScrollView>
   );
 }
