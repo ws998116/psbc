@@ -138,7 +138,7 @@ export default function SermonPlayer() {
         <Image
           style={{
             width: '100%',
-            aspectRatio: 16 / 9,
+            aspectRatio: 8 / 5,
             borderRadius: borderRadius,
           }}
           contentFit="cover"

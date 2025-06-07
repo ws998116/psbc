@@ -92,8 +92,8 @@ export default function SermonSeries() {
         >
           <Text
             style={styles.errorText}
-            lightColor='rgba(0,0,0,0.8)'
-            darkColor='rgba(255,255,255,0.8)'
+            lightColor="rgba(0,0,0,0.8)"
+            darkColor="rgba(255,255,255,0.8)"
           >
             {err}
           </Text>
@@ -109,11 +109,11 @@ export default function SermonSeries() {
           <Image
             style={{
               width: '100%',
-              aspectRatio: 16 / 9,
+              aspectRatio: 8 / 5,
               borderRadius: borderRadius,
               maxWidth: 600,
             }}
-            contentFit='cover'
+            contentFit="cover"
             source={sermons[0]?.imageUrl}
             transition={200}
           />
@@ -132,7 +132,7 @@ export default function SermonSeries() {
             }
             style={styles.flatlist}
             showsVerticalScrollIndicator={false}
-            contentInsetAdjustmentBehavior='automatic'
+            contentInsetAdjustmentBehavior="automatic"
           />
         </>
       )}

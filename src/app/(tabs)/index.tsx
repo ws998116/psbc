@@ -44,7 +44,7 @@ export default function TabOneScreen() {
       contentContainerStyle={styles.container}
       showsVerticalScrollIndicator={false}
     >
-      <View
+      {/* <View
         style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
@@ -55,10 +55,8 @@ export default function TabOneScreen() {
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
       />
-      <Text style={styles.title}>Listen to the latest sermon</Text>
-      <View style={{ width: '90%', backgroundColor: 'transparent' }}>
-        <SermonCard sermon={latestSermon} />
-      </View>
+      <Text style={styles.title}>Listen to the latest sermon</Text> */}
+      <SermonCard sermon={latestSermon} />
     </ScrollView>
   );
 }
@@ -67,7 +65,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'flex-start',
-    // marginTop: "5%",
+    margin: 10,
     paddingBottom: '25%',
   },
   title: {

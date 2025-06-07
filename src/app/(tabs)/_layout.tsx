@@ -1,12 +1,12 @@
-import React from "react";
-import { Church, AudioLines, Settings } from "lucide-react-native";
-import { Link, Tabs } from "expo-router";
-import { Pressable } from "react-native";
+import React from 'react';
+import { Church, AudioLines, Settings } from 'lucide-react-native';
+import { Link, Tabs } from 'expo-router';
+import { Pressable } from 'react-native';
 
-import Colors from "@/src/constants/Colors";
-import { useColorScheme } from "@/src/components/useColorScheme";
-import { useClientOnlyValue } from "@/src/components/useClientOnlyValue";
-import MiniPlayer from "@/src/components/MiniPlayer";
+import Colors from '@/src/constants/Colors';
+import { useColorScheme } from '@/src/components/useColorScheme';
+import { useClientOnlyValue } from '@/src/components/useClientOnlyValue';
+import MiniPlayer from '@/src/components/MiniPlayer';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -15,7 +15,7 @@ export default function TabLayout() {
     <>
       <Tabs
         screenOptions={{
-          tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+          tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
           // Disable the static render of the header on web
           // to prevent a hydration error in React Navigation v6.
           headerShown: useClientOnlyValue(false, true),
@@ -24,7 +24,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "Home",
+            title: 'Home',
             tabBarIcon: ({ color }) => <Church color={color} />,
             headerRight: () => (
               <Link href="/settings" asChild>
@@ -32,7 +32,7 @@ export default function TabLayout() {
                   {({ pressed }) => (
                     <Settings
                       size={25}
-                      color={Colors[colorScheme ?? "light"].text}
+                      color={Colors[colorScheme ?? 'light'].text}
                       style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                     />
                   )}
@@ -44,7 +44,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="sermons"
           options={{
-            title: "Sermons",
+            title: 'Sermons',
             tabBarIcon: ({ color }) => <AudioLines color={color} />,
             headerShown: false,
           }}

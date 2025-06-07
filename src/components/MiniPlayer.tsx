@@ -35,7 +35,7 @@ export default function MiniPlayer() {
             borderRadius: borderRadius,
             alignSelf: 'center',
             overflow: 'hidden',
-            borderWidth: 0.5,
+            borderWidth: 1,
             backgroundColor:
               Platform.OS === 'android' ? bgColor : 'transparent',
             maxWidth: Platform.OS === 'web' ? 400 : undefined,

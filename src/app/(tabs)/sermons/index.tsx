@@ -82,12 +82,12 @@ export default function SermonSeries() {
       return (
         item.title.toLowerCase().includes(searchText.toLowerCase()) ||
         item.expand?.sermons.some((sermon) =>
-          sermon?.title.toLowerCase().includes(searchText.toLowerCase()),
+          sermon?.title.toLowerCase().includes(searchText.toLowerCase())
         ) ||
         item.expand?.sermons.some((sermon) =>
           sermon?.expand?.speaker?.name
             .toLowerCase()
-            .includes(searchText.toLowerCase()),
+            .includes(searchText.toLowerCase())
         )
       );
     });
@@ -96,7 +96,7 @@ export default function SermonSeries() {
 
   const renderSeries: ListRenderItem<SeriesRecord> = ({ item: series }) => {
     if (series.title === 'skeleton') {
-      return <ActivityIndicator size='large' color={textColor} />;
+      return <ActivityIndicator size="large" color={textColor} />;
     } else {
       return <SeriesCard series={series} />;
     }
@@ -104,6 +104,13 @@ export default function SermonSeries() {
 
   const separator = () => <View style={styles.separator} />;
 
+  if (loading) {
+    return (
+      <View style={[styles.container, { justifyContent: 'center' }]}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <View style={styles.listContainer}>
@@ -127,7 +134,7 @@ export default function SermonSeries() {
               }}
             >
               <TextInput
-                placeholder='Search for a series, sermon, or speaker...'
+                placeholder="Search for a series, sermon, or speaker..."
                 value={searchText}
                 onChangeText={(text) => {
                   setSearchText(text);
@@ -151,22 +158,9 @@ export default function SermonSeries() {
           }
           ListFooterComponent={separator}
           showsVerticalScrollIndicator={Platform.OS === 'web' ? true : false}
-          contentInsetAdjustmentBehavior='automatic'
+          contentInsetAdjustmentBehavior="automatic"
           style={styles.flatlist}
         />
-        {/* <View
-          style={{
-            width: 50,
-            height: "100%",
-            paddingVertical: verticalPadding,
-            justifyContent: "space-between",
-            alignContent: "center",
-            backgroundColor: "transparent",
-          }}
-        >
-          <SubText style={{ textAlign: "center" }}>JAN</SubText>
-          <SubText style={{ textAlign: "center" }}>DEC</SubText>
-        </View> */}
       </View>
     </View>
   );

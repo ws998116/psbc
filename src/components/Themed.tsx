@@ -27,13 +27,13 @@ export type ScrollViewProps = ThemeProps & DefaultScrollView['props'];
 
 export const horizontalPadding = 10;
 export const verticalPadding = 10;
-export const borderRadius = 7;
+export const borderRadius = 14;
 export const textLightColor = 'rgba(0,0,0,1)';
 export const textDarkColor = 'rgba(255,255,255,1)';
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
-  colorName: keyof typeof Colors.light & keyof typeof Colors.dark,
+  colorName: keyof typeof Colors.light & keyof typeof Colors.dark
 ) {
   const theme = useColorScheme() ?? 'light';
   const colorFromProps = props[theme];
@@ -57,7 +57,7 @@ export function TextInput(props: TextInputProps) {
   const color = useThemeColor({ light: lightColor, dark: darkColor }, 'text');
   const placeholderTextColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    'placeholder',
+    'placeholder'
   );
 
   return (
@@ -73,7 +73,7 @@ export function View(props: ViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    'background',
+    'background'
   );
   const borderColor = useThemeColor({}, 'border');
 
@@ -101,7 +101,7 @@ export function ScrollView(props: ScrollViewProps) {
   const { style, lightColor, darkColor, ...otherProps } = props;
   const backgroundColor = useThemeColor(
     { light: lightColor, dark: darkColor },
-    'background',
+    'background'
   );
 
   return (
