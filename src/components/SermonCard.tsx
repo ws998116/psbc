@@ -5,7 +5,6 @@ import { useRouter } from 'expo-router';
 import { borderRadius, Text, useThemeColor, View } from './Themed';
 import { SermonsResponse, SpeakersResponse } from '@/pocketbase-types';
 import { useAudio } from '../context/audio';
-import { get } from 'react-native/Libraries/TurboModule/TurboModuleRegistry';
 import { BlurView } from 'expo-blur';
 import { BodyText, HeaderText, SubText } from './StyledText';
 
