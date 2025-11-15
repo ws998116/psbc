@@ -143,10 +143,10 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 20,
     marginBottom: 7,
-    color: 'white',
+    color: 'black',
   },
   text: {
     fontSize: 14,
-    color: 'white',
+    color: 'black',
   },
 });

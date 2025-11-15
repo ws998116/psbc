@@ -1,6 +1,7 @@
 import { ScrollView, StyleSheet } from 'react-native';
 
 import { Text, View } from '@/src/components/Themed';
+import Colors from '@/src/constants/Colors';
 import { useEffect, useState } from 'react';
 import {
   Collections,
@@ -54,9 +55,41 @@ export default function TabOneScreen() {
         style={styles.separator}
         lightColor="#eee"
         darkColor="rgba(255,255,255,0.1)"
-      />
-      <Text style={styles.title}>Listen to the latest sermon</Text> */}
+      /> */}
+      <Text
+        style={styles.title}
+        lightColor={Colors.light.text}
+        darkColor={Colors.dark.text}
+      >
+        Latest Sermon
+      </Text>
+      <Text
+        style={styles.subtitle}
+        lightColor={Colors.light.subtext}
+        darkColor={Colors.dark.subtext}
+      >
+        Listen the newest message
+      </Text>
       <SermonCard sermon={latestSermon} />
+      <View
+        style={styles.separator}
+        lightColor="#ded"
+        darkColor="rgba(255,255,255,0.1)"
+      />
+      <Text
+        style={styles.title}
+        lightColor={Colors.light.text}
+        darkColor={Colors.dark.text}
+      >
+        Church Calendar
+      </Text>
+      <Text
+        style={styles.subtitle}
+        lightColor={Colors.light.subtext}
+        darkColor={Colors.dark.subtext}
+      >
+        What season do we find ourselves in?
+      </Text>
     </ScrollView>
   );
 }
@@ -69,8 +102,21 @@ const styles = StyleSheet.create({
     paddingBottom: '25%',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
+    fontSize: 22,
+    fontWeight: '700',
+    marginVertical: 4,
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
+    textAlign: 'left',
+    letterSpacing: 0.2,
+  },
+  subtitle: {
+    fontSize: 14,
+    fontWeight: '400',
+    marginTop: 4,
+    marginBottom: 12,
+    alignSelf: 'stretch',
+    paddingHorizontal: 10,
   },
   separator: {
     marginVertical: 30,
