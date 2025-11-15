@@ -1,4 +1,4 @@
-import { Pressable, SafeAreaView, StyleSheet } from 'react-native';
+import { Pressable, StyleSheet } from 'react-native';
 import { useCallback, useEffect, useState } from 'react';
 
 import {
@@ -17,6 +17,7 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { useRouter } from 'expo-router';
 import Slider from '@react-native-community/slider';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 function getTime(sec: number) {
   var minutes = Math.floor(sec / 60);
@@ -42,9 +43,10 @@ export default function SermonPlayer() {
     try {
       setDownloading(true);
       if (audio?.sermon?.slidesUrl) {
-        const response = await FileSystem.downloadAsync(
+        const response = await FileSystem.File.downloadFileAsync(
           audio.sermon.slidesUrl,
-          FileSystem.documentDirectory + audio?.sermon?.title + '.pdf'
+          new FileSystem.Directory(FileSystem.Paths.document),
+          { idempotent: true }
         );
         setSource(response.uri);
       } else {
